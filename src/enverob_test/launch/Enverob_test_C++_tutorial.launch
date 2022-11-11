@@ -1,6 +1,0 @@
-<launch>
-
-  <node name="Enverob_test_C++_node" pkg="enverob_test" type="Enverob_test_C++_tutorial" respawn="false" output="screen">
-  </node>
-
-</launch>

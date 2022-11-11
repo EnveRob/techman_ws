@@ -47,7 +47,7 @@
 
 int main(int argc, char** argv)
 {
-  ros::init(argc, argv, "Enverob_test_C++_node");
+  ros::init(argc, argv, "Enverob_test_Cpp_node");
   ros::NodeHandle node_handle;
   ros::AsyncSpinner spinner(1);
   spinner.start();

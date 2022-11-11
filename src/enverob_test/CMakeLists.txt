@@ -36,6 +36,6 @@ catkin_package(
 include_directories(
     ${catkin_INCLUDE_DIRS}
 )
-add_executable(Enverob_test_tutorial src/Enverob_test.cpp)
-add_dependencies(Enverob_test_tutorial ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
-target_link_libraries(Enverob_test_tutorial ${catkin_LIBRARIES} ${Boost_LIBRARIES})
+add_executable(Enverob_test_Cpp_tutorial src/Enverob_test.cpp)
+add_dependencies(Enverob_test_Cpp_tutorial ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
+target_link_libraries(Enverob_test_Cpp_tutorial ${catkin_LIBRARIES} ${Boost_LIBRARIES})
