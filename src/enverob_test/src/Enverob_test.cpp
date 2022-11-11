@@ -32,7 +32,7 @@
  *  POSSIBILITY OF SUCH DAMAGE.
  *********************************************************************/
 
-/* Author: Sachin Chitta, Dave Coleman, Mike Lautman */
+/* Author: William */
 
 #include <moveit/move_group_interface/move_group_interface.h>
 #include <moveit/planning_scene_interface/planning_scene_interface.h>
@@ -47,7 +47,7 @@
 
 int main(int argc, char** argv)
 {
-  ros::init(argc, argv, "Enverob_test_C++_node");
+  ros::init(argc, argv, "Enverob_test_Cpp_node");
   ros::NodeHandle node_handle;
   ros::AsyncSpinner spinner(1);
   spinner.start();
