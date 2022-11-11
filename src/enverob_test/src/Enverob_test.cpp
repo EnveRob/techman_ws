@@ -47,7 +47,7 @@
 
 int main(int argc, char** argv)
 {
-  ros::init(argc, argv, "Enverob_test_node");
+  ros::init(argc, argv, "Enverob_test_C++_node");
   ros::NodeHandle node_handle;
   ros::AsyncSpinner spinner(1);
   spinner.start();
@@ -194,8 +194,8 @@ int main(int argc, char** argv)
   // Let's specify a path constraint and a pose goal for our group.
   // First define the path constraint.
   moveit_msgs::OrientationConstraint ocm;
-  ocm.link_name = "panda_link7";
-  ocm.header.frame_id = "panda_link0";
+  ocm.link_name = "link_6";
+  ocm.header.frame_id = "link_0";
   ocm.orientation.w = 1.0;
   ocm.absolute_x_axis_tolerance = 0.1;
   ocm.absolute_y_axis_tolerance = 0.1;
