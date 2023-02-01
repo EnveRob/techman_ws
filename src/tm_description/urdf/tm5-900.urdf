@@ -162,5 +162,24 @@
     <child link="tool0"/>
     <origin rpy="0.000000 0.000000 0.000000" xyz="0.000000 0.000000 0.000000"/>
   </joint>
-
+  
+  <link name="gripper">
+    <visual>
+      <geometry>
+        <mesh filename="package://tm_description/meshes/Gripper.stl"/>
+      </geometry>
+    </visual>
+    <collision>
+      <geometry>
+        <mesh filename="package://tm_description/meshes/Gripper.stl"/>
+      </geometry>
+    </collision>
+  </link>
+  
+  <joint name="gripper_joint" type="fixed">
+    <parent link="link_6"/>
+    <child link="gripper"/>
+    <origin rpy="0.000000 0.000000 0.000000" xyz="0.000000 0.000000 0.000000"/>
+  </joint>
+  
 </robot>
