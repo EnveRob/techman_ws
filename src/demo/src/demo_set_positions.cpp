@@ -13,7 +13,7 @@ int main(int argc, char **argv)
 {  
   ros::init(argc, argv, "demo_set_positions");      
   ros::NodeHandle nh_demo; 
-  ros::ServiceClient client = nh_demo.serviceClient<tm_msgs::SetPositions>("tm_driver/set_positions");
+  ros::ServiceClient client = nh_demo.serviceClient<tm_msgs::SetPositions>("tm_driver/set_positions1");
   tm_msgs::SetPositions srv;
   	
   //Request
