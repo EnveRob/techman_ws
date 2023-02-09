@@ -42,8 +42,8 @@ int main(int argc,char** argv)
     srv.request.positions.push_back(laserTransform.getOrigin().getY());
     srv.request.positions.push_back(laserTransform.getOrigin().getZ());
     srv.request.positions.push_back(laserTransform.getRotation().getX());
-    srv.request.positions.push_back(laserTransform.getRotation().getX());
-    srv.request.positions.push_back(laserTransform.getRotation().getX());
+    srv.request.positions.push_back(laserTransform.getRotation().getY());
+    srv.request.positions.push_back(laserTransform.getRotation().getZ());
     srv.request.velocity = 0.5;//rad/s
     srv.request.acc_time = 0.2;
     srv.request.blend_percentage = 10;
