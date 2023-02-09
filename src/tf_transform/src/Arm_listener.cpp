@@ -36,14 +36,14 @@ int main(int argc,char** argv)
         }  
         loop_rate.sleep();
     }
-    std::cout << "Start sending command " << laserTransform.getOrigin().getZ() << std::endl;
+    
     srv.request.motion_type = tm_msgs::SetPositions::Request::PTP_T;
     srv.request.positions.push_back(laserTransform.getOrigin().getX());
     srv.request.positions.push_back(laserTransform.getOrigin().getY());
     srv.request.positions.push_back(laserTransform.getOrigin().getZ());
-    srv.request.positions.push_back(laserTransform.getOrigin().getROW());
-    srv.request.positions.push_back(3.78);
-    srv.request.positions.push_back(81.25);
+    srv.request.positions.push_back(laserTransform.getRotation().getX());
+    srv.request.positions.push_back(laserTransform.getRotation().getX());
+    srv.request.positions.push_back(laserTransform.getRotation().getX());
     srv.request.velocity = 0.5;//rad/s
     srv.request.acc_time = 0.2;
     srv.request.blend_percentage = 10;
