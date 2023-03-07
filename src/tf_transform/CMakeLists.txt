@@ -204,10 +204,13 @@ include_directories(
 #   target_link_libraries(${PROJECT_NAME}-test ${PROJECT_NAME})
 # endif()
 
+
 ## Add folders to be run by python nosetests
 # catkin_add_nosetests(test)
 add_executable(camera_broadcaster src/Camera_broadcaster.cpp)
 target_link_libraries(camera_broadcaster ${catkin_LIBRARIES})
+add_dependencies(camera_broadcaster ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 
 add_executable(arm_listener src/Arm_listener.cpp)
 target_link_libraries(arm_listener ${catkin_LIBRARIES})
+add_dependencies(arm_listener ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
