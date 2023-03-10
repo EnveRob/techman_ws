@@ -1,0 +1,8 @@
+prefix=/home/a891021960035/Desktop/Parallels Shared Folders/psf/EnveRob/techman_ws/devel
+
+Name: tm_demo
+Description: Description of tm_demo
+Version: 0.0.0
+Cflags: 
+Libs: -L${prefix}/lib 
+Requires: 

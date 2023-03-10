@@ -1,0 +1,8 @@
+prefix=/home/a891021960035/Desktop/Parallels Shared Folders/psf/EnveRob/techman_ws/devel
+
+Name: tm_msgs
+Description: Description of tm_msgs
+Version: 1.1.2
+Cflags: -I/home/a891021960035/Desktop/Parallels Shared Folders/psf/EnveRob/techman_ws/devel/include
+Libs: -L${prefix}/lib 
+Requires: message_runtime std_msgs sensor_msgs geometry_msgs

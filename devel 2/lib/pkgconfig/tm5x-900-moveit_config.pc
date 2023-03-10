@@ -1,0 +1,8 @@
+prefix=/home/a891021960035/Desktop/Parallels Shared Folders/psf/EnveRob/techman_ws/devel
+
+Name: tm5x-900-moveit_config
+Description: Description of tm5x-900-moveit_config
+Version: 0.3.0
+Cflags: 
+Libs: -L${prefix}/lib 
+Requires: 
