@@ -10,11 +10,7 @@ int main(int argc, char** argv)
     
     tf::Transform base2laser;
     tf::Quaternion q;
-<<<<<<< HEAD
-    q.setRPY(.5,0,-0.5);
-=======
     q.setRPY(0,0,0.2);
->>>>>>> parent of 2431fb9... debug cmake
     base2laser.setRotation(q);              //设置旋转坐标
     base2laser.setOrigin(tf::Vector3(0.1,0.3,0.3));//设平移坐标，mailbox在camera的(1,0,0)位置
 
