@@ -312,6 +312,9 @@
     <child link="gripper"/>
     <origin rpy="-1.570795 0.000000 -1.570795" xyz="0.0224 0.0001 0.1568"/>
   </joint>
+
+  <disable_collisions link1="gripper" link2="link_6" reason="Never" />
+
 <!--LinkDescription-->
 
   </xacro:macro>
