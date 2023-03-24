@@ -48,9 +48,9 @@
     <arg name="publish_monitored_planning_scene" value="true" />
   </include>
 
-  <include file="$(find tm5-900-moveit_config)/launch/moveit_rviz.launch">
+  <!-- <include file="$(find tm5-900-moveit_config)/launch/moveit_rviz.launch">
     <arg name="rviz_config" value="$(find tm5-900-moveit_config)/launch/moveit.rviz"/>
-  </include>
+  </include> -->
   
   <!-- <include file="$(find tm5-900-moveit_config)/launch/default_warehouse_db.launch" /> -->
 
