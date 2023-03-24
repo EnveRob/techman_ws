@@ -45,7 +45,6 @@ int main(int argc, char** argv)
                //控制节点运行的频率,与loop.sleep共同使用
 
     
-    
     // loop_rate.sleep();
     ros::spin();  
     return 0;

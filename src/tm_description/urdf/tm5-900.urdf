@@ -166,12 +166,12 @@
   <link name="gripper">
     <visual>
       <geometry>
-        <mesh filename="package://tm_description/meshes/Gripper.stl"/>
+        <mesh filename="package://tm_description/meshes/gripper2023v1.stl"/>
       </geometry>
     </visual>
     <collision>
       <geometry>
-        <mesh filename="package://tm_description/meshes/Gripper.stl"/>
+        <mesh filename="package://tm_description/meshes/gripper2023v1.stl"/>
       </geometry>
     </collision>
   </link>
