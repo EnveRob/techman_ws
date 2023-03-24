@@ -315,6 +315,15 @@
 
   <disable_collisions link1="gripper" link2="link_6" reason="Never" />
 
+  <link name="camera">
+  </link>
+
+  <joint name="camera_joint" type="fixed">
+    <parent link="${prefix}link_6"/>
+    <child link="camera"/>
+    <origin rpy="0.00000 0.000000 -1.570795" xyz="-0.0585 -0.0115 0.15995"/>
+  </joint>
+
 <!--LinkDescription-->
 
   </xacro:macro>
