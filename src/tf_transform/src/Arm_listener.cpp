@@ -49,7 +49,7 @@ int main(int argc,char** argv)
         return 1;
     } 
 
-    for (double i = 0;i <= 3.14; i+=0.314)
+    for (double i = 0;i <= 3.14; i+=0.0314)
     {
         srv.request.motion_type = tm_msgs::SetPositions::Request::PTP_J;
         srv.request.positions[0] = 0;
@@ -62,17 +62,7 @@ int main(int argc,char** argv)
         srv.request.acc_time = 0.5;
         srv.request.blend_percentage = 10;
         srv.request.fine_goal  = false;
-        std::cout << "current direction" << i << std::endl; 
-
-        // if (listener.waitForTransform("base","mailbox",ros::Time(0),ros::Duration(0.1))) //等待10s，如果10s之后都还没收到消息，那么之前的消息就被丢弃掉。
-        // {
-            
-        //     listener.lookupTransform("base","mailbox", ros::Time(0), laserTransform);
-        //     std::cout << "laserTransform.getOrigin().getX(): " << (laserTransform.getOrigin().getX()-gripper_offset) << std::endl;
-        //     std::cout << "laserTransform.getOrigin().getY(): " << laserTransform.getOrigin().getY() << std::endl;
-        //     std::cout << "laserTransform.getOrigin().getZ(): " << laserTransform.getOrigin().getZ() << std::endl;
-        //     break;
-        // }  
+        std::cout << "current direction" << i << std::endl;  
         
         // searching_direction = searching_direction + searching_rate;
 
@@ -86,6 +76,33 @@ int main(int argc,char** argv)
             ROS_ERROR_STREAM("Error SetPositions to robot");
             return 1;
         }
+
+        if (listener.waitForTransform("base","mailbox",ros::Time(0),ros::Duration(1))) //等待10s，如果10s之后都还没收到消息，那么之前的消息就被丢弃掉。
+        {
+            
+            listener.lookupTransform("base","mailbox", ros::Time(0), laserTransform);
+            std::cout << "laserTransform.getOrigin().getX(): " << laserTransform.getOrigin().getX() << std::endl;
+            std::cout << "laserTransform.getOrigin().getY(): " << laserTransform.getOrigin().getY() << std::endl;
+            std::cout << "laserTransform.getOrigin().getZ(): " << laserTransform.getOrigin().getZ() << std::endl;
+            srv.request.motion_type = tm_msgs::SetPositions::Request::PTP_T;
+            srv.request.positions[0] = laserTransform.getOrigin().getX();
+            srv.request.positions[1] = laserTransform.getOrigin().getY();
+            srv.request.positions[2] = laserTransform.getOrigin().getZ();
+            srv.request.positions[3] = laserTransform.getRotation().getX();
+            srv.request.positions[4] = laserTransform.getRotation().getY();
+            srv.request.positions[5] = laserTransform.getRotation().getZ();
+            if (client.call(srv))                             
+            {
+                if (srv.response.ok) ROS_INFO_STREAM("SetPositions to robot");
+                else ROS_WARN_STREAM("SetPositions to robot , but response not yet ok ");
+            }
+            else
+            {
+                ROS_ERROR_STREAM("Error SetPositions to robot");
+                return 1;
+            }
+            break;
+        } 
         loop_rate.sleep();   
     }
     
@@ -102,6 +119,7 @@ int main(int argc,char** argv)
     // srv.request.fine_goal  = false;
 
     // ROS_INFO_STREAM_NAMED("SetPositions", "shutdown.");  	
+    ROS_INFO("I see mailbox!");
     return 0;
     // tm_msgs::SetPositions mailbox_w;
     // mailbox_w.motion_type = 2;

@@ -214,3 +214,7 @@ add_dependencies(camera_broadcaster ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin
 add_executable(arm_listener src/Arm_listener.cpp)
 target_link_libraries(arm_listener ${catkin_LIBRARIES})
 add_dependencies(arm_listener ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
+
+add_executable(camera_broadcaster_test src/camera_broadcaster_test.cpp)
+target_link_libraries(camera_broadcaster_test ${catkin_LIBRARIES})
+add_dependencies(camera_broadcaster_test ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})

@@ -166,22 +166,35 @@
   <link name="gripper">
     <visual>
       <geometry>
-        <mesh filename="package://tm_description/meshes/gripper2023v1.stl"/>
+        <mesh scale="0.001 0.001 0.001" filename="package://tm_description/meshes/gripper2023v1.stl"/>
       </geometry>
+      <material name="Grey">
+        <color rgba="0.9 0.9 0.9 1.0"/>
+      </material>
     </visual>
+    
     <collision>
       <geometry>
-        <mesh filename="package://tm_description/meshes/gripper2023v1.stl"/>
+        <mesh scale="0.001 0.001 0.001" filename="package://tm_description/meshes/gripper2023v1.stl"/>
       </geometry>
     </collision>
   </link>
-  
   <joint name="gripper_joint" type="fixed">
-    <parent link="link_6"/>
+    <parent link="${prefix}link_6"/>
     <child link="gripper"/>
-    <origin rpy="0.000000 0.000000 0.000000" xyz="0.000000 0.000000 0.000000"/>
+    <origin rpy="-1.570795 0.000000 -1.570795" xyz="0 0 0.132"/>
   </joint>
 
   <disable_collisions link1="gripper" link2="link_6" reason="Never" />
+
+  <link name="camera">
+  </link>
+
+  <joint name="camera_joint" type="fixed">
+    <parent link="${prefix}link_6"/>
+    <child link="camera"/>
+    <origin rpy="0.00000 0.000000 -1.570795" xyz="-0.0585 -0.0115 0.15995"/>
+  </joint>
+  
   
 </robot>

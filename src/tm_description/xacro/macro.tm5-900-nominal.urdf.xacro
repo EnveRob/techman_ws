@@ -315,8 +315,7 @@
 
   <disable_collisions link1="gripper" link2="link_6" reason="Never" />
 
-  <link name="camera">
-  </link>
+  <link name="camera"/> 
 
   <joint name="camera_joint" type="fixed">
     <parent link="${prefix}link_6"/>
