@@ -13,6 +13,9 @@ find_package(catkin REQUIRED COMPONENTS
   tf
   tm_msgs
   std_msgs
+  moveit_core
+  moveit_ros_planning
+  moveit_ros_planning_interface
 )
 
 ## System dependencies are found with CMake's conventions
@@ -109,6 +112,7 @@ catkin_package(
 #  LIBRARIES tf_transform
 #  CATKIN_DEPENDS roscpp rospy tf
 #  DEPENDS system_lib
+  CATKIN_DEPENDS roscpp moveit_core moveit_ros_planning_interface
 )
 
 ###########
@@ -118,7 +122,7 @@ catkin_package(
 ## Specify additional locations of header files
 ## Your package locations should be listed before other locations
 include_directories(
-# include
+  # include
   ${catkin_INCLUDE_DIRS}
 )
 
@@ -218,3 +222,6 @@ add_dependencies(arm_listener ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPOR
 add_executable(camera_broadcaster_test src/camera_broadcaster_test.cpp)
 target_link_libraries(camera_broadcaster_test ${catkin_LIBRARIES})
 add_dependencies(camera_broadcaster_test ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
+
+add_executable(moveit_demo src/moveit_demo.cpp)
+target_link_libraries(moveit_demo ${catkin_LIBRARIES})
