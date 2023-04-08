@@ -22,9 +22,9 @@
   <gazebo reference="link_6">
     <selfCollide>true</selfCollide>
   </gazebo>
-  <gazebo reference="gripper">
+  <!-- <gazebo reference="gripper">
     <selfCollide>true</selfCollide>
-  </gazebo>
+  </gazebo> -->
   <gazebo reference="camera">
     <selfCollide>true</selfCollide>
   </gazebo>

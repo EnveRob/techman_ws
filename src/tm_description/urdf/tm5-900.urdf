@@ -163,7 +163,7 @@
     <origin rpy="0.000000 0.000000 0.000000" xyz="0.000000 0.000000 0.000000"/>
   </joint>
   
-  <link name="gripper">
+  <!-- <link name="gripper">
     <visual>
       <geometry>
         <mesh scale="0.001 0.001 0.001" filename="package://tm_description/meshes/gripper2023v1.stl"/>
@@ -178,14 +178,14 @@
         <mesh scale="0.001 0.001 0.001" filename="package://tm_description/meshes/gripper2023v1.stl"/>
       </geometry>
     </collision>
-  </link>
-  <joint name="gripper_joint" type="fixed">
+  </link> -->
+  <!-- <joint name="gripper_joint" type="fixed">
     <parent link="${prefix}link_6"/>
     <child link="gripper"/>
     <origin rpy="-1.570795 0.000000 -1.570795" xyz="0 0 0.132"/>
-  </joint>
+  </joint> -->
 
-  <disable_collisions link1="gripper" link2="link_6" reason="Never" />
+  <!-- <disable_collisions link1="gripper" link2="link_6" reason="Never" /> -->
 
   <link name="camera">
   </link>
