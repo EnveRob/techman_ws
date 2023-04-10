@@ -57,6 +57,12 @@ int main(int argc, char** argv)
   target_pose.orientation.x = laserTransform.getRotation().getX();
   target_pose.orientation.y = laserTransform.getRotation().getY();
   target_pose.orientation.z = laserTransform.getRotation().getZ();
+  std::cout << "laserTransform.getOrigin().getX(): " << laserTransform.getOrigin().getX() << std::endl;
+  std::cout << "laserTransform.getOrigin().getY(): " << laserTransform.getOrigin().getY() << std::endl;
+  std::cout << "laserTransform.getOrigin().getZ(): " << laserTransform.getOrigin().getZ() << std::endl;
+  std::cout << "laserTransform.getRotation().getX(): " << laserTransform.getRotation().getX() << std::endl;
+  std::cout << "laserTransform.getRotation().getY(): " << laserTransform.getRotation().getY() << std::endl;
+  std::cout << "laserTransform.getRotation().getZ(): " << laserTransform.getRotation().getZ() << std::endl;
 
   // 将目标位置转换为机械臂的姿态
   move_group.setPoseTarget(target_pose, end_effector_link);
