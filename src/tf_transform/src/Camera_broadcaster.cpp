@@ -33,9 +33,8 @@ void cameraCallback(const std_msgs::String::ConstPtr& msg)
     static tf::TransformBroadcaster broadcaster; //创建tf广播器
     tf::Transform mail2camera;
     tf::Quaternion q;
-    q.setRPY(v[3],v[4],v[5]);
-    //q.setRPY(0.05,0.05,0.01);
-    mail2camera.setRotation(q);              //设置旋转坐标
+    q.setRPY(v[3],v[4],v[5]);                   //以弧度為單位
+    mail2camera.setRotation(q);                 //设置旋转坐标
     mail2camera.setOrigin(tf::Vector3(v[0],v[1],v[2]-gripper_offset));//设平移坐标，mailbox在camera的(1,0,0)位置
     //mail2camera.setOrigin(tf::Vector3(0,1,1));//设平移坐标，mailbox在camera的(1,0,0)位置
     ros::Time start_time = ros::Time::now();
@@ -47,7 +46,6 @@ void cameraCallback(const std_msgs::String::ConstPtr& msg)
         ROS_INFO("finish broadcast");
         ros::Duration(0.1).sleep();
     }
-    
     
 }
 

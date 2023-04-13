@@ -28,6 +28,7 @@ int main(int argc, char** argv)
       std::cout << "laserTransform.getRotation().getX(): " << laserTransform.getRotation().getX() << std::endl;
       std::cout << "laserTransform.getRotation().getY(): " << laserTransform.getRotation().getY() << std::endl;
       std::cout << "laserTransform.getRotation().getZ(): " << laserTransform.getRotation().getZ() << std::endl;
+      std::cout << "laserTransform.getRotation().getW(): " << laserTransform.getRotation().getW() << std::endl;
       break;
     }
     loop_rate.sleep();
@@ -47,8 +48,8 @@ int main(int argc, char** argv)
   moveit::core::RobotStatePtr current_state = move_group.getCurrentState();
   std::vector<double> joint_group_positions;
   current_state->copyJointGroupPositions(
-        move_group.getCurrentState()->getRobotModel()->getJointModelGroup(move_group.getName()),
-        joint_group_positions);
+    move_group.getCurrentState()->getRobotModel()->getJointModelGroup(move_group.getName()),
+    joint_group_positions);
 
   // 获取机械臂的末端执行器链接名称
   std::string end_effector_link = move_group.getEndEffectorLink();
@@ -59,25 +60,10 @@ int main(int argc, char** argv)
   target_pose.position.y = laserTransform.getOrigin().getY();
   target_pose.position.z = laserTransform.getOrigin().getZ();
 
-  // Set the target orientation
-  // target_pose.orientation.w = 1.0;
-  // target_pose.orientation.x = laserTransform.getRotation().getX();
-  // target_pose.orientation.y = laserTransform.getRotation().getY();
-  // target_pose.orientation.z = laserTransform.getRotation().getZ();
-  tf2::Quaternion orientation;
-  orientation.setRPY(
-    laserTransform.getRotation().getX(), 
-    laserTransform.getRotation().getY(), 
-    laserTransform.getRotation().getZ()
-  ); // Roll-Pitch-Yaw angles
-  geometry_msgs::Quaternion orientation_msg;
-  tf2::convert(orientation, orientation_msg);
-  target_pose.orientation = orientation_msg;
-  // target_pose.orientation = tf2::toMsg(orientation_msg);
-  std::cout << "orientation w: " << target_pose.orientation.w << std::endl;
-  std::cout << "orientation x: " << target_pose.orientation.x << std::endl;
-  std::cout << "orientation y: " << target_pose.orientation.y << std::endl;
-  std::cout << "orientation z: " << target_pose.orientation.z << std::endl;
+  target_pose.orientation.w = laserTransform.getRotation().getW();
+  target_pose.orientation.x = laserTransform.getRotation().getX();
+  target_pose.orientation.y = laserTransform.getRotation().getY();
+  target_pose.orientation.z = laserTransform.getRotation().getZ();
 
   // 将目标位置转换为机械臂的姿态
   move_group.setPoseTarget(target_pose, end_effector_link);
