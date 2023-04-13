@@ -23,6 +23,9 @@ int main(int argc, char** argv)
       std::cout << "laserTransform.getOrigin().getX(): " << laserTransform.getOrigin().getX() << std::endl;
       std::cout << "laserTransform.getOrigin().getY(): " << laserTransform.getOrigin().getY() << std::endl;
       std::cout << "laserTransform.getOrigin().getZ(): " << laserTransform.getOrigin().getZ() << std::endl;
+      std::cout << "laserTransform.getRotation().getX(): " << laserTransform.getRotation().getX() << std::endl;
+      std::cout << "laserTransform.getRotation().getY(): " << laserTransform.getRotation().getY() << std::endl;
+      std::cout << "laserTransform.getRotation().getZ(): " << laserTransform.getRotation().getZ() << std::endl;
       break;
     }
     loop_rate.sleep();
@@ -50,19 +53,26 @@ int main(int argc, char** argv)
 
   // 创建要移动到的目标位置
   geometry_msgs::Pose target_pose;
-  target_pose.orientation.w = 1.0;
   target_pose.position.x = laserTransform.getOrigin().getX();
   target_pose.position.y = laserTransform.getOrigin().getY();
   target_pose.position.z = laserTransform.getOrigin().getZ();
-  target_pose.orientation.x = laserTransform.getRotation().getX();
-  target_pose.orientation.y = laserTransform.getRotation().getY();
-  target_pose.orientation.z = laserTransform.getRotation().getZ();
-  std::cout << "laserTransform.getOrigin().getX(): " << laserTransform.getOrigin().getX() << std::endl;
-  std::cout << "laserTransform.getOrigin().getY(): " << laserTransform.getOrigin().getY() << std::endl;
-  std::cout << "laserTransform.getOrigin().getZ(): " << laserTransform.getOrigin().getZ() << std::endl;
-  std::cout << "laserTransform.getRotation().getX(): " << laserTransform.getRotation().getX() << std::endl;
-  std::cout << "laserTransform.getRotation().getY(): " << laserTransform.getRotation().getY() << std::endl;
-  std::cout << "laserTransform.getRotation().getZ(): " << laserTransform.getRotation().getZ() << std::endl;
+
+  // Set the target orientation
+  // target_pose.orientation.w = 1.0;
+  // target_pose.orientation.x = laserTransform.getRotation().getX();
+  // target_pose.orientation.y = laserTransform.getRotation().getY();
+  // target_pose.orientation.z = laserTransform.getRotation().getZ();
+  tf2::Quaternion orientation;
+  orientation.setRPY(
+    laserTransform.getRotation().getX(), 
+    laserTransform.getRotation().getY(), 
+    laserTransform.getRotation().getZ()
+  ); // Roll-Pitch-Yaw angles
+  target_pose.orientation = tf2::toMsg(orientation);
+  std::cout << "orientation w: " << target_pose.orientation.w << std::endl;
+  std::cout << "orientation x: " << target_pose.orientation.x << std::endl;
+  std::cout << "orientation y: " << target_pose.orientation.y << std::endl;
+  std::cout << "orientation z: " << target_pose.orientation.z << std::endl;
 
   // 将目标位置转换为机械臂的姿态
   move_group.setPoseTarget(target_pose, end_effector_link);

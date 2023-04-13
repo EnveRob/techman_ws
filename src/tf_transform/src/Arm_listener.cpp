@@ -26,11 +26,11 @@ int main(int argc,char** argv)
     //Request
 
     srv.request.motion_type = tm_msgs::SetPositions::Request::PTP_J;
+    srv.request.positions.push_back(3.14/2);
     srv.request.positions.push_back(0);
-    srv.request.positions.push_back(0);
-    srv.request.positions.push_back(0);
-    srv.request.positions.push_back(0);
-    srv.request.positions.push_back(0);
+    srv.request.positions.push_back(-3.14/2);
+    srv.request.positions.push_back(3.14/2);
+    srv.request.positions.push_back(-3.14/2);
     srv.request.positions.push_back(0);
     srv.request.velocity = 2;//rad/s
     srv.request.acc_time = 0.5;

@@ -13,7 +13,7 @@ int main(int argc, char** argv)
     tf::Quaternion q;
     q.setRPY(0,0,0);
     base2laser.setRotation(q);              //设置旋转坐标
-    base2laser.setOrigin(tf::Vector3(0,1,0));//设平移坐标，mailbox在camera的(1,0,0)位置
+    base2laser.setOrigin(tf::Vector3(0,1,0));//设平移坐标，mailbox相對camera的位置
 
     while (n.ok())
     {
