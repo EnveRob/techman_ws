@@ -1,6 +1,8 @@
 #include <ros/ros.h>
 #include <tf/transform_listener.h>
 #include <moveit/move_group_interface/move_group_interface.h>
+#include <geometry_msgs/Quaternion.h>
+#include <tf2_geometry_msgs/tf2_geometry_msgs.h>
 
 int main(int argc, char** argv)
 {
@@ -68,7 +70,10 @@ int main(int argc, char** argv)
     laserTransform.getRotation().getY(), 
     laserTransform.getRotation().getZ()
   ); // Roll-Pitch-Yaw angles
-  target_pose.orientation = tf2::toMsg(orientation);
+  geometry_msgs::Quaternion orientation_msg;
+  tf2::convert(orientation, orientation_msg);
+  target_pose.orientation = orientation_msg;
+  // target_pose.orientation = tf2::toMsg(orientation_msg);
   std::cout << "orientation w: " << target_pose.orientation.w << std::endl;
   std::cout << "orientation x: " << target_pose.orientation.x << std::endl;
   std::cout << "orientation y: " << target_pose.orientation.y << std::endl;
