@@ -108,36 +108,9 @@ int main(int argc,char** argv)
         } 
         loop_rate.sleep();   
     }
-    
-    // srv.request.motion_type = tm_msgs::SetPositions::Request::PTP_T;
-    // srv.request.positions.push_back(laserTransform.getOrigin().getX()-gripper_offset);
-    // srv.request.positions.push_back(laserTransform.getOrigin().getY());
-    // srv.request.positions.push_back(laserTransform.getOrigin().getZ());
-    // srv.request.positions.push_back(laserTransform.getRotation().getX());
-    // srv.request.positions.push_back(laserTransform.getRotation().getY());
-    // srv.request.positions.push_back(laserTransform.getRotation().getZ());
-    // srv.request.velocity = 0.5;//rad/s
-    // srv.request.acc_time = 0.2;
-    // srv.request.blend_percentage = 10;
-    // srv.request.fine_goal  = false;
 
     // ROS_INFO_STREAM_NAMED("SetPositions", "shutdown.");  	
     ROS_INFO("I see mailbox!");
     return 0;
-    // tm_msgs::SetPositions mailbox_w;
-    // mailbox_w.motion_type = 2;
-    // mailbox_w.velocity = 0.2;//rad/s
-    // mailbox_w.acc_time = 0.2;
-    // mailbox_w.blend_percentage = 10;
-    // mailbox_w.fine_goal  = false;
-    // mailbox_w.positions.push_back(laserTransform.getOrigin().getX());
-    // mailbox_w.positions.push_back(laserTransform.getOrigin().getY());
-    // mailbox_w.positions.push_back(laserTransform.getOrigin().getZ());
-    // mailbox_w.positions.push_back(laserTransform.getOrigin().getRow());
-    // mailbox_w.positions.push_back(laserTransform.getOrigin().getPitch());
-    // mailbox_w.positions.push_back(laserTransform.getOrigin().getYaw());
-
-    // mailbox_pub.publish(mailbox_w);
-    // std::cout << "pulishedddddddddd" << std::endl;
     
 }
