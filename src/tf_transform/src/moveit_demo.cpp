@@ -2,7 +2,17 @@
 #include <tf/transform_listener.h>
 #include <moveit/move_group_interface/move_group_interface.h>
 #include <geometry_msgs/Quaternion.h>
-#include <tf2_geometry_msgs/tf2_geometry_msgs.h>
+
+// 宣告以moveit控制機械手臂的關節角度的函式
+void setJointangle(
+  moveit::planning_interface::MoveGroupInterface &move_group, 
+  double joint1, double joint2, double joint3, 
+  double joint4, double joint5, double joint6); //joint1~6分别代表六个关节的角度,单位为弧度
+
+// 宣告將機械手臂移動到指定位置的函式
+void setTargetPosition(moveit::planning_interface::MoveGroupInterface &move_group, 
+  double x, double y, double z, 
+  double qx, double qy, double qz, double qw);
 
 int main(int argc, char** argv)
 {
@@ -15,8 +25,19 @@ int main(int argc, char** argv)
   //创建一个监听器，监听所有tf变换，缓冲10s
   tf::TransformListener listener;
   tf::StampedTransform laserTransform;
-  
-  //Request
+
+  // 指定机械臂规划组的名称
+  static const std::string PLANNING_GROUP = "tmr_arm";
+
+  // 创建MoveGroupInterface对象，用于规划和控制机械臂
+  moveit::planning_interface::MoveGroupInterface move_group(PLANNING_GROUP);
+
+  // 设置机械臂的允许误差
+  move_group.setGoalTolerance(0.005);
+
+  // 呼叫 setJointangle 函式，將機械手臂的關節角度設定為 0
+  setJointangle(move_group, 3.14/2, 0, -3.14/2, 3.14/2, -3.14/2, 0);
+
   while (node_handle.ok())
   {
     if (listener.waitForTransform("base","mailbox",ros::Time(0),ros::Duration(10))) //等待10s，如果10s之后都还没收到消息，那么之前的消息就被丢弃掉。
@@ -34,37 +55,61 @@ int main(int argc, char** argv)
     loop_rate.sleep();
   }
 
-  // 指定机械臂规划组的名称
-  static const std::string PLANNING_GROUP = "tmr_arm";
+  // 呼叫 setTargetPosition 函式，將機械手臂移動到指定位置
+  setTargetPosition(move_group, 
+    laserTransform.getOrigin().getX(), 
+    laserTransform.getOrigin().getY(), 
+    laserTransform.getOrigin().getZ(), 
+    laserTransform.getRotation().getX(), 
+    laserTransform.getRotation().getY(), 
+    laserTransform.getRotation().getZ(), 
+    laserTransform.getRotation().getW());
 
-  // 创建MoveGroupInterface对象，用于规划和控制机械臂
-  moveit::planning_interface::MoveGroupInterface move_group(PLANNING_GROUP);
+  return 0;
+}
 
-  // 设置机械臂的允许误差
-  move_group.setGoalTolerance(0.01);
+void setJointangle(
+  moveit::planning_interface::MoveGroupInterface &move_group, 
+  double joint1, double joint2, double joint3, 
+  double joint4, double joint5, double joint6) //joint1~6分别代表六个关节的角度,单位为弧度
+{
+  std::vector<double> joint_group_positions;
+  joint_group_positions.push_back(joint1);
+  joint_group_positions.push_back(joint2);
+  joint_group_positions.push_back(joint3);
+  joint_group_positions.push_back(joint4);
+  joint_group_positions.push_back(joint5);
+  joint_group_positions.push_back(joint6);
+  move_group.setJointValueTarget(joint_group_positions);
+  move_group.move();
+  ROS_INFO("Set Initial Joint Angle");
+}
 
+void setTargetPosition(moveit::planning_interface::MoveGroupInterface &move_group, 
+  double x, double y, double z, 
+  double qx, double qy, double qz, double qw)
+{
   // 获取机械臂的当前姿态
   moveit::planning_interface::MoveGroupInterface::Plan my_plan;
   moveit::core::RobotStatePtr current_state = move_group.getCurrentState();
   std::vector<double> joint_group_positions;
   current_state->copyJointGroupPositions(
-    move_group.getCurrentState()->getRobotModel()->getJointModelGroup(move_group.getName()),
-    joint_group_positions);
+  move_group.getCurrentState()->getRobotModel()->getJointModelGroup(move_group.getName()),
+  joint_group_positions);
 
   // 获取机械臂的末端执行器链接名称
   std::string end_effector_link = move_group.getEndEffectorLink();
 
   // 创建要移动到的目标位置
   geometry_msgs::Pose target_pose;
-  target_pose.position.x = laserTransform.getOrigin().getX();
-  target_pose.position.y = laserTransform.getOrigin().getY();
-  target_pose.position.z = laserTransform.getOrigin().getZ();
-
-  target_pose.orientation.w = laserTransform.getRotation().getW();
-  target_pose.orientation.x = laserTransform.getRotation().getX();
-  target_pose.orientation.y = laserTransform.getRotation().getY();
-  target_pose.orientation.z = laserTransform.getRotation().getZ();
-
+  target_pose.position.x = x;
+  target_pose.position.y = y;
+  target_pose.position.z = z;
+  target_pose.orientation.x = qx;
+  target_pose.orientation.y = qy;
+  target_pose.orientation.z = qz;
+  target_pose.orientation.w = qw;
+  
   // 将目标位置转换为机械臂的姿态
   move_group.setPoseTarget(target_pose, end_effector_link);
 
@@ -75,12 +120,10 @@ int main(int argc, char** argv)
   {
     // 执行机械臂的运动路径
     move_group.execute(my_plan);
+    ROS_INFO("Set Target Position");
   }
   else
   {
     ROS_ERROR("Failed to plan and execute motion");
   }
-
-//   ros::shutdown();
-  return 0;
 }
