@@ -292,12 +292,30 @@
   </joint>
 
   <link name="camera"/> 
-
   <joint name="camera_joint" type="fixed">
     <parent link="${prefix}link_6"/>
     <child link="camera"/>
-    <origin rpy="0.00000 0.000000 -1.570795" xyz="-0.0585 -0.0115 0.15995"/>
+    <origin rpy="0.00000 0.000000 -1.570795" xyz="-0.0585 0.000000 0.15995"/>
   </joint>
+
+  <link name="gripper_link">
+    <visual>
+      <origin xyz="0 0 0" rpy="0.000000 0.000000 0.000000"/>
+      <!-- -1.570795 -->
+      <geometry>
+        <mesh scale="0.001 0.001 0.001" filename="package://tm_description/meshes/gripper.stl"/>
+      </geometry>
+      <material name="Grey">
+        <color rgba="0.9 0.9 0.9 1.0"/>
+      </material>
+    </visual>
+  </link>
+  <joint name="gripper_joint" type="fixed">
+    <parent link="${prefix}flange_link"/>
+    <child link="gripper_link"/>
+    <origin xyz="0 0 0.132" rpy="-1.570795 0.000000 -1.570795"/>
+  </joint>
+
 
 <!--LinkDescription-->
 
