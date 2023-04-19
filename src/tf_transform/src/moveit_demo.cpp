@@ -24,7 +24,7 @@ int main(int argc, char** argv)
   
   //创建一个监听器，监听所有tf变换，缓冲10s
   tf::TransformListener listener;
-  tf::StampedTransform laserTransform;
+  tf::StampedTransform targetTransform;
 
   // 指定机械臂规划组的名称
   static const std::string PLANNING_GROUP = "tmr_arm";
@@ -35,35 +35,39 @@ int main(int argc, char** argv)
   // 设置机械臂的允许误差
   move_group.setGoalTolerance(0.005);
 
-  // 呼叫 setJointangle 函式，將機械手臂的關節角度設定為 0
-  setJointangle(move_group, 3.14/2, 0, -3.14/2, 3.14/2, -3.14/2, 0);
-
-  while (node_handle.ok())
+  // 呼叫 setJointangle 函式，將機械手臂移動到初始位置
+  // setJointangle(move_group, 3.14/2, 0, -3.14/2, 3.14/2, -3.14/2, 0);
+  setJointangle(move_group, 3.14/2, 0, -3.14/2, 3.14/2, 0, 0);
+  
+  double current_direction = 0;
+  while (node_handle.ok() && current_direction>=-3.14)
   {
-    if (listener.waitForTransform("base","mailbox",ros::Time(0),ros::Duration(10))) //等待10s，如果10s之后都还没收到消息，那么之前的消息就被丢弃掉。
+    setJointangle(move_group, 3.14/2, 0, -3.14/2, 3.14/2, current_direction, 0);
+    if (listener.waitForTransform("base","mailbox",ros::Time(0),ros::Duration(3))) //等待10s，如果10s之后都还没收到消息，那么之前的消息就被丢弃掉。
     {
-      listener.lookupTransform("base","mailbox", ros::Time(0), laserTransform);
-      std::cout << "laserTransform.getOrigin().getX(): " << laserTransform.getOrigin().getX() << std::endl;
-      std::cout << "laserTransform.getOrigin().getY(): " << laserTransform.getOrigin().getY() << std::endl;
-      std::cout << "laserTransform.getOrigin().getZ(): " << laserTransform.getOrigin().getZ() << std::endl;
-      std::cout << "laserTransform.getRotation().getX(): " << laserTransform.getRotation().getX() << std::endl;
-      std::cout << "laserTransform.getRotation().getY(): " << laserTransform.getRotation().getY() << std::endl;
-      std::cout << "laserTransform.getRotation().getZ(): " << laserTransform.getRotation().getZ() << std::endl;
-      std::cout << "laserTransform.getRotation().getW(): " << laserTransform.getRotation().getW() << std::endl;
+      listener.lookupTransform("base","mailbox", ros::Time(0), targetTransform);
+      std::cout << "targetTransform.getOrigin().getX(): " << targetTransform.getOrigin().getX() << std::endl;
+      std::cout << "targetTransform.getOrigin().getY(): " << targetTransform.getOrigin().getY() << std::endl;
+      std::cout << "targetTransform.getOrigin().getZ(): " << targetTransform.getOrigin().getZ() << std::endl;
+      std::cout << "targetTransform.getRotation().getX(): " << targetTransform.getRotation().getX() << std::endl;
+      std::cout << "targetTransform.getRotation().getY(): " << targetTransform.getRotation().getY() << std::endl;
+      std::cout << "targetTransform.getRotation().getZ(): " << targetTransform.getRotation().getZ() << std::endl;
+      std::cout << "targetTransform.getRotation().getW(): " << targetTransform.getRotation().getW() << std::endl;
       break;
     }
+    current_direction -= 0.314;
     loop_rate.sleep();
   }
 
   // 呼叫 setTargetPosition 函式，將機械手臂移動到指定位置
   setTargetPosition(move_group, 
-    laserTransform.getOrigin().getX(), 
-    laserTransform.getOrigin().getY(), 
-    laserTransform.getOrigin().getZ(), 
-    laserTransform.getRotation().getX(), 
-    laserTransform.getRotation().getY(), 
-    laserTransform.getRotation().getZ(), 
-    laserTransform.getRotation().getW());
+    targetTransform.getOrigin().getX(), 
+    targetTransform.getOrigin().getY(), 
+    targetTransform.getOrigin().getZ(), 
+    targetTransform.getRotation().getX(), 
+    targetTransform.getRotation().getY(), 
+    targetTransform.getRotation().getZ(), 
+    targetTransform.getRotation().getW());
 
   return 0;
 }
@@ -73,16 +77,18 @@ void setJointangle(
   double joint1, double joint2, double joint3, 
   double joint4, double joint5, double joint6) //joint1~6分别代表六个关节的角度,单位为弧度
 {
-  std::vector<double> joint_group_positions;
-  joint_group_positions.push_back(joint1);
-  joint_group_positions.push_back(joint2);
-  joint_group_positions.push_back(joint3);
-  joint_group_positions.push_back(joint4);
-  joint_group_positions.push_back(joint5);
-  joint_group_positions.push_back(joint6);
+  // 設定大小為6的vector，用來存放六個關節角度
+  std::vector<double> joint_group_positions(6);
+  joint_group_positions[0] = joint1;
+  joint_group_positions[1] = joint2;
+  joint_group_positions[2] = joint3;
+  joint_group_positions[3] = joint4;
+  joint_group_positions[4] = joint5;
+  joint_group_positions[5] = joint6;
+
   move_group.setJointValueTarget(joint_group_positions);
   move_group.move();
-  ROS_INFO("Set Initial Joint Angle");
+  std::cout << "current direction: " << joint5 << std::endl;
 }
 
 void setTargetPosition(moveit::planning_interface::MoveGroupInterface &move_group, 

@@ -22,12 +22,6 @@
   <gazebo reference="link_6">
     <selfCollide>true</selfCollide>
   </gazebo>
-  <!-- <gazebo reference="gripper">
-    <selfCollide>true</selfCollide>
-  </gazebo> -->
-  <gazebo reference="camera">
-    <selfCollide>true</selfCollide>
-  </gazebo>
   <gazebo>
     <plugin filename="libgazebo_ros_control.so" name="gazebo_ros_control">
       <robotNamespace>/</robotNamespace>
