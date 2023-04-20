@@ -10,7 +10,7 @@ void forceCallback(const geometry_msgs::Vector3& msg)
 
 int main(int argc, char **argv)
 {
-  ros::init(argc, argv, "arduino_listener");
+  ros::init(argc, argv, "feedback_controller");
   ros::NodeHandle n;
   ros::Subscriber sub = n.subscribe("force_data", 1000, forceCallback);
   ros::spin();
