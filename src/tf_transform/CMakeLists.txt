@@ -219,15 +219,23 @@ include_directories(
 # target_link_libraries(${PROJECT_NAME}-test ${PROJECT_NAME})
 # endif()
 
+<<<<<<< HEAD
 ## Add folders to be run by python nosetests
 >>>>>>> parent of 2431fb9... debug cmake
+=======
+# # Add folders to be run by python nosetests
+>>>>>>> parent of aad1844... stage temperor
 # catkin_add_nosetests(test)
 add_executable(camera_broadcaster src/Camera_broadcaster.cpp)
 target_link_libraries(camera_broadcaster ${catkin_LIBRARIES})
+add_dependencies(camera_broadcaster ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 
 add_executable(arm_listener src/Arm_listener.cpp)
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> parent of aad1844... stage temperor
 target_link_libraries(arm_listener ${catkin_LIBRARIES})
 add_dependencies(arm_listener ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 
@@ -242,8 +250,8 @@ target_link_libraries(moveit_demo ${catkin_LIBRARIES})
 add_executable(moveit_demo src/moveit_demo.cpp)
 target_link_libraries(moveit_demo ${catkin_LIBRARIES})
 add_dependencies(moveit_demo ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
-<<<<<<< HEAD
 >>>>>>> add tf_transform/src/moveit_demo
+<<<<<<< HEAD
 =======
 =======
 target_link_libraries(arm_listener ${catkin_LIBRARIES})
@@ -252,3 +260,5 @@ target_link_libraries(arm_listener ${catkin_LIBRARIES})
 =======
 target_link_libraries(arm_listener ${catkin_LIBRARIES})
 >>>>>>> Revert "debug cmake"
+=======
+>>>>>>> parent of aad1844... stage temperor

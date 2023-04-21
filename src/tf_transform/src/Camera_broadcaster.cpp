@@ -1,19 +1,11 @@
 #include <ros/ros.h>
 #include <tf/transform_broadcaster.h>
-<<<<<<< HEAD
 #include "std_msgs/String.h"
 #include <string>
 #include <sstream>
 #include <vector>
 #include <iostream>
 const double gripper_offset = 0.135;
-=======
-int main(int argc, char** argv)
-{
-    ros::init(argc, argv, "camera_broadcaster");//初始化ROS节点与节点名称
-    ros::NodeHandle n;                    //创建节点的句柄
-    ros::Rate loop_rate(10);             //控制节点运行的频率,与loop.sleep共同使用
->>>>>>> stage temperor
 
 
 void cameraCallback(const std_msgs::String::ConstPtr& msg)
@@ -34,9 +26,12 @@ void cameraCallback(const std_msgs::String::ConstPtr& msg)
 =======
     tf::Transform base2laser;
     tf::Quaternion q;
-    q.setRPY(0,0,0.2);
-    base2laser.setRotation(q);              //设置旋转坐标
 <<<<<<< HEAD
+    q.setRPY(0,0,0.2);
+=======
+    q.setRPY(.5,0,-0.5);
+>>>>>>> parent of aad1844... stage temperor
+    base2laser.setRotation(q);              //设置旋转坐标
     base2laser.setOrigin(tf::Vector3(-1,-3,-3));//设平移坐标，mailbox在camera的(1,0,0)位置
 >>>>>>> add tf_transform/src/moveit_demo
 
@@ -46,9 +41,6 @@ void cameraCallback(const std_msgs::String::ConstPtr& msg)
     ROS_INFO("I heard: [%f]", v[3]);
     ROS_INFO("I heard: [%f]", v[4]);
     ROS_INFO("I heard: [%f]", v[5]);
-=======
-    base2laser.setOrigin(tf::Vector3(0.1,0.3,0.3));//设平移坐标，mailbox在camera的(1,0,0)位置
->>>>>>> stage temperor
 
     static tf::TransformBroadcaster broadcaster; //创建tf广播器
     tf::Transform mail2camera;
