@@ -55,20 +55,28 @@
   <build_depend>tm_msgs</build_depend>
   <build_depend>std_msgs</build_depend>
   <build_depend>moveit_core</build_depend>
+<<<<<<< HEAD
   <build_depend>moveit_ros_planning</build_depend>
+=======
+>>>>>>> add tf_transform/src/moveit_demo
   <build_depend>moveit_ros_planning_interface</build_depend>
   <build_export_depend>roscpp</build_export_depend>
   <build_export_depend>rospy</build_export_depend>
   <build_export_depend>tf</build_export_depend>
   <build_export_depend>std_msgs</build_export_depend>
   <build_export_depend>tm_msgs</build_export_depend>
+  <build_export_depend>moveit_core</build_export_depend>
+  <build_export_depend>moveit_ros_planning_interface</build_export_depend>
   <exec_depend>roscpp</exec_depend>
   <exec_depend>rospy</exec_depend>
   <exec_depend>tf</exec_depend>
   <exec_depend>tm_msgs</exec_depend>
   <exec_depend>std_msgs</exec_depend>
   <exec_depend>moveit_core</exec_depend>
+<<<<<<< HEAD
   <exec_depend>moveit_ros_planning</exec_depend>
+=======
+>>>>>>> add tf_transform/src/moveit_demo
   <exec_depend>moveit_ros_planning_interface</exec_depend>
 
 
