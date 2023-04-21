@@ -23,6 +23,7 @@ void cameraCallback(const std_msgs::String::ConstPtr& msg)
         v.push_back(std::stod(token));
     }
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
     tf::Transform base2laser;
     tf::Quaternion q;
@@ -34,6 +35,8 @@ void cameraCallback(const std_msgs::String::ConstPtr& msg)
     base2laser.setRotation(q);              //设置旋转坐标
     base2laser.setOrigin(tf::Vector3(-1,-3,-3));//设平移坐标，mailbox在camera的(1,0,0)位置
 >>>>>>> add tf_transform/src/moveit_demo
+=======
+>>>>>>> parent of d08365e... add tf_transform/src/moveit_demo
 =======
 >>>>>>> parent of d08365e... add tf_transform/src/moveit_demo
 

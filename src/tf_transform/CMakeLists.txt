@@ -210,11 +210,16 @@ include_directories(
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
 ## Add folders to be run by python nosetests
 >>>>>>> parent of 2431fb9... debug cmake
 =======
 # # Add folders to be run by python nosetests
 >>>>>>> parent of aad1844... stage temperor
+=======
+
+## Add folders to be run by python nosetests
+>>>>>>> parent of d08365e... add tf_transform/src/moveit_demo
 =======
 
 ## Add folders to be run by python nosetests
@@ -239,6 +244,7 @@ add_dependencies(camera_broadcaster_test ${${PROJECT_NAME}_EXPORTED_TARGETS} ${c
 
 add_executable(moveit_demo src/moveit_demo.cpp)
 <<<<<<< HEAD
+<<<<<<< HEAD
 target_link_libraries(moveit_demo ${catkin_LIBRARIES})
 =======
 add_executable(moveit_demo src/moveit_demo.cpp)
@@ -256,6 +262,9 @@ target_link_libraries(arm_listener ${catkin_LIBRARIES})
 >>>>>>> Revert "debug cmake"
 =======
 >>>>>>> parent of aad1844... stage temperor
+=======
+target_link_libraries(moveit_demo ${catkin_LIBRARIES})
+>>>>>>> parent of d08365e... add tf_transform/src/moveit_demo
 =======
 target_link_libraries(moveit_demo ${catkin_LIBRARIES})
 >>>>>>> parent of d08365e... add tf_transform/src/moveit_demo
