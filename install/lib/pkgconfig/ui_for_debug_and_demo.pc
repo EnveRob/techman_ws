@@ -1,0 +1,8 @@
+prefix=/home/a891021960035/Desktop/Parallels Shared Folders/psf/EnveRob/techman_ws/install
+
+Name: ui_for_debug_and_demo
+Description: Description of ui_for_debug_and_demo
+Version: 1.1.1
+Cflags: 
+Libs: -L${prefix}/lib 
+Requires: 

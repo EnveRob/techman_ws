@@ -12,7 +12,6 @@ void cameraCallback(const std_msgs::String::ConstPtr& msg)
 {
     ROS_INFO("I heard: [%s]", msg->data.c_str());
     
-<<<<<<< HEAD
     std::stringstream ss(msg->data.c_str());
     std::string token;
     std::vector<std::string> tokens;
@@ -23,6 +22,7 @@ void cameraCallback(const std_msgs::String::ConstPtr& msg)
     for (const auto& token : tokens) {
         v.push_back(std::stod(token));
     }
+<<<<<<< HEAD
 =======
     tf::Transform base2laser;
     tf::Quaternion q;
@@ -34,6 +34,8 @@ void cameraCallback(const std_msgs::String::ConstPtr& msg)
     base2laser.setRotation(q);              //设置旋转坐标
     base2laser.setOrigin(tf::Vector3(-1,-3,-3));//设平移坐标，mailbox在camera的(1,0,0)位置
 >>>>>>> add tf_transform/src/moveit_demo
+=======
+>>>>>>> parent of d08365e... add tf_transform/src/moveit_demo
 
     ROS_INFO("I heard: [%f]", v[0]);
     ROS_INFO("I heard: [%f]", v[1]);
