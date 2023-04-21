@@ -1,17 +1,33 @@
-cmake_minimum_required(VERSION 2.8.3)
+cmake_minimum_required(VERSION 3.0.2)
 project(feedback_controller)
 
-## Find catkin and any catkin packages
-find_package(catkin REQUIRED COMPONENTS roscpp std_msgs geometry_msgs)
+## Compile as C++11, supported in ROS Kinetic and newer
+add_compile_options(-std=c++11)
 
-## Declare a catkin package
-catkin_package()
+## Find catkin macros and libraries
+find_package(catkin REQUIRED COMPONENTS
+  moveit_core
+  moveit_ros_planning
+  moveit_ros_planning_interface
+  rosconsole
+  roscpp
+  rospy
+  std_msgs
+)
 
-## Build talker and listener
-include_directories(include ${catkin_INCLUDE_DIRS})
+catkin_package(
+  CATKIN_DEPENDS
+    moveit_core
+    moveit_ros_planning_interface
+)
 
-add_executable(listener src/feedback_controller.cpp)
-target_link_libraries(listener ${catkin_LIBRARIES})
+include_directories(
+  ${catkin_INCLUDE_DIRS}
+)
 
+## Declare a C++ executable
 add_executable(feedback_controller src/feedback_controller.cpp)
+
+## Specify libraries to link a library or executable target against
 target_link_libraries(feedback_controller ${catkin_LIBRARIES})
+
