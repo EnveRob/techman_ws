@@ -72,16 +72,12 @@
   <exec_depend>tf</exec_depend>
   <exec_depend>tm_msgs</exec_depend>
   <exec_depend>std_msgs</exec_depend>
-<<<<<<< HEAD
   <exec_depend>moveit_core</exec_depend>
 <<<<<<< HEAD
   <exec_depend>moveit_ros_planning</exec_depend>
 =======
 >>>>>>> add tf_transform/src/moveit_demo
   <exec_depend>moveit_ros_planning_interface</exec_depend>
-=======
-
->>>>>>> Revert "debug cmake"
 
   <!-- The export tag contains other, unspecified, tags -->
   <export>
