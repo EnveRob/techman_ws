@@ -1,6 +1,10 @@
 build/
+build 2/
 devel/
+devel 2/
+install/
 src/.vscode/
+src/moveit_visual_tools
 .vscode
 .catkin_workspace
 *.bin
