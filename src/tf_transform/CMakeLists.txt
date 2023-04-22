@@ -9,8 +9,9 @@ project(tf_transform)
 ## is used, also find other catkin packages
 find_package(catkin REQUIRED COMPONENTS
   roscpp
-  rospy
   tf
+  tf2
+  tf2_ros
   tm_msgs
   std_msgs
   moveit_core
@@ -112,7 +113,13 @@ catkin_package(
 #  LIBRARIES tf_transform
 #  CATKIN_DEPENDS roscpp rospy tf
 #  DEPENDS system_lib
-  CATKIN_DEPENDS roscpp moveit_core moveit_ros_planning_interface
+  CATKIN_DEPENDS 
+  roscpp 
+  tf 
+  tf2 
+  tf2_ros 
+  moveit_core 
+  moveit_ros_planning_interface
 )
 
 ###########
@@ -218,10 +225,6 @@ add_dependencies(camera_broadcaster ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin
 add_executable(arm_listener src/Arm_listener.cpp)
 target_link_libraries(arm_listener ${catkin_LIBRARIES})
 add_dependencies(arm_listener ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
-
-add_executable(camera_broadcaster_test src/camera_broadcaster_test.cpp)
-target_link_libraries(camera_broadcaster_test ${catkin_LIBRARIES})
-add_dependencies(camera_broadcaster_test ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 
 add_executable(moveit_demo src/moveit_demo.cpp)
 target_link_libraries(moveit_demo ${catkin_LIBRARIES})

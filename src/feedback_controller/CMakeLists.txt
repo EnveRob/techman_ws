@@ -6,13 +6,14 @@ add_compile_options(-std=c++11)
 
 ## Find catkin macros and libraries
 find_package(catkin REQUIRED COMPONENTS
+  roscpp
+  rospy
+  tf
+  std_msgs
   moveit_core
   moveit_ros_planning
   moveit_ros_planning_interface
   rosconsole
-  roscpp
-  rospy
-  std_msgs
 )
 
 catkin_package(
