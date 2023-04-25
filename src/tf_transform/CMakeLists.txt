@@ -218,7 +218,7 @@ include_directories(
 
 ## Add folders to be run by python nosetests
 # catkin_add_nosetests(test)
-add_executable(camera_broadcaster src/Camera_broadcaster.cpp)
+add_executable(camera_broadcaster src/camera_broadcaster.cpp)
 target_link_libraries(camera_broadcaster ${catkin_LIBRARIES})
 add_dependencies(camera_broadcaster ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 
