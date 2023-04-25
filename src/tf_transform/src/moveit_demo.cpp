@@ -37,12 +37,12 @@ int main(int argc, char** argv)
 
   // 呼叫 setJointangle 函式，將機械手臂移動到初始位置
   // setJointangle(move_group, 3.14/2, 0, -3.14/2, 3.14/2, -3.14/2, 0);
-  setJointangle(move_group, 3.14/2, 0, -3.14/2, 3.14/2, 0, 0);
+  setJointangle(move_group, 3.14/2, 0, -3.14/2, 3.14/2, 0, -3.14/2);
   
   double current_direction = 0;
   while (node_handle.ok() && current_direction>=-3.14)
   {
-    setJointangle(move_group, 3.14/2, 0, -3.14/2, 3.14/2, current_direction, 0);
+    setJointangle(move_group, 3.14/2, 0, -3.14/2, 3.14/2, current_direction, -3.14/2);
     if (listener.waitForTransform("base","mailbox",ros::Time(0),ros::Duration(3))) //等待10s，如果10s之后都还没收到消息，那么之前的消息就被丢弃掉。
     {
       listener.lookupTransform("base","mailbox", ros::Time(0), targetTransform);
@@ -104,6 +104,7 @@ void setTargetPosition(moveit::planning_interface::MoveGroupInterface &move_grou
   joint_group_positions);
 
   // 获取机械臂的末端执行器链接名称
+  move_group.setEndEffectorLink("gripper_link");
   std::string end_effector_link = move_group.getEndEffectorLink();
 
   // 创建要移动到的目标位置
@@ -115,6 +116,27 @@ void setTargetPosition(moveit::planning_interface::MoveGroupInterface &move_grou
   target_pose.orientation.y = qy;
   target_pose.orientation.z = qz;
   target_pose.orientation.w = qw;
+
+  tf::Quaternion q(target_pose.orientation.x, 
+                   target_pose.orientation.y, 
+                   target_pose.orientation.z, 
+                   target_pose.orientation.w);
+
+  // 定義旋轉軸和旋轉角度
+  tf::Vector3 axis(1, 0, 0);
+  double angle = M_PI;
+
+  // 將旋轉軸和旋轉角度轉換為四元數
+  tf::Quaternion rotation;
+  rotation.setRotation(axis, angle);
+
+  q *= rotation;
+  q.normalize();
+
+  target_pose.orientation.x = q.x();
+  target_pose.orientation.y = q.y();
+  target_pose.orientation.z = q.z();
+  target_pose.orientation.w = q.w();
   
   // 将目标位置转换为机械臂的姿态
   move_group.setPoseTarget(target_pose, end_effector_link);

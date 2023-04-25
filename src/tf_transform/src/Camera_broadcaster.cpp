@@ -1,11 +1,11 @@
 #include <ros/ros.h>
 #include "std_msgs/String.h"
 #include <tf/transform_broadcaster.h>
-
+#include <tf/transform_listener.h>
 #include <tf2_ros/static_transform_broadcaster.h>
 #include <geometry_msgs/TransformStamped.h>
 
-const double gripper_offset = 0.135;
+const double gripper_offset = 0.15;
 
 
 void cameraCallback(const std_msgs::String::ConstPtr& msg)
@@ -30,30 +30,13 @@ void cameraCallback(const std_msgs::String::ConstPtr& msg)
     ROS_INFO("I heard: [%f]", v[4]);
     ROS_INFO("I heard: [%f]", v[5]);
 
-    // --------------------------------------------------------------------------------
-    // static tf::TransformBroadcaster broadcaster; //创建tf广播器
-    // tf::Transform mail2camera;
-    // tf::Quaternion q;
-    // q.setRPY(v[3],v[4],v[5]);                   //以弧度為單位
-    // mail2camera.setRotation(q);                 //设置旋转坐标
-    // mail2camera.setOrigin(tf::Vector3(v[0],v[1],v[2]-gripper_offset));//设平移坐标，mailbox在camera的(1,0,0)位置
-    //mail2camera.setOrigin(tf::Vector3(0,1,1));//设平移坐标，mailbox在camera的(1,0,0)位置
-    // ros::Time start_time = ros::Time::now();
-    // //循环发布坐标变换，两种方式
-    // while(ros::Time::now()-start_time <= ros::Duration(5))
-    // {
-    //     broadcaster.sendTransform(tf::StampedTransform(mail2camera,ros::Time::now(),"camera","mailbox"));
-    //     //broadcaster.sendTransform(tf::StampedTransform(tf::Transform(tf::Quaternion(0, 0, 0, 0), tf::Vector3(1, 0.0, 0)),ros::Time::now(),"base_link", "base_laser"));
-    //     ROS_INFO("finish broadcast");
-    //     ros::Duration(0.1).sleep();
-    // }
-
-    // --------------------------------------------------------------------------------
     static tf2_ros::StaticTransformBroadcaster static_broadcaster;
+    // static_broadcaster.sendTransform(std::vector<geometry_msgs::TransformStamped>());
+    static tf2_ros::StaticTransformBroadcaster static_br_base2mailbox;
+    // static_br_base2mailbox.sendTransform(std::vector<geometry_msgs::TransformStamped>());
+
     geometry_msgs::TransformStamped mail2camera;
 
-    // 创建一个 tf::Transform 对象
-    // tf::Transform mail2camera;
     tf::Quaternion q;
     q.setRPY(v[3],v[4],v[5]);                   //以弧度為單位
     mail2camera.transform.rotation.x = q.x();
@@ -62,7 +45,7 @@ void cameraCallback(const std_msgs::String::ConstPtr& msg)
     mail2camera.transform.rotation.w = q.w();
     mail2camera.transform.translation.x = v[0];
     mail2camera.transform.translation.y = v[1];
-    mail2camera.transform.translation.z = v[2]-gripper_offset;
+    mail2camera.transform.translation.z = v[2] - gripper_offset;
 
     // 设置 transform 的时间戳、参考系名称和子参考系名称
     mail2camera.header.stamp = ros::Time::now();
@@ -72,17 +55,65 @@ void cameraCallback(const std_msgs::String::ConstPtr& msg)
     // 发布 transform
     static_broadcaster.sendTransform(mail2camera);
 
+    // 延遲10秒鐘
+    // int t = 6;
+    // ros::Duration(t).sleep();
+    // ROS_INFO("sleep %d seconds", t);
+
+    // 聽取轉換
+    tf::TransformListener listener;
+    tf::StampedTransform mailbox_frame;
+
+    while (ros::ok())
+    {
+      try
+      {
+        listener.waitForTransform("base", "mailbox", ros::Time(0), ros::Duration(3.0));
+        listener.lookupTransform("base", "mailbox", ros::Time(0), mailbox_frame);
+        ROS_INFO("Transform: \n%.2f, %.2f, %.2f, \n%.2f, %.2f, %.2f, %.2f",
+                  mailbox_frame.getOrigin().getX(),
+                  mailbox_frame.getOrigin().getY(),
+                  mailbox_frame.getOrigin().getZ(),
+                  mailbox_frame.getRotation().getX(),
+                  mailbox_frame.getRotation().getY(),
+                  mailbox_frame.getRotation().getZ(),
+                  mailbox_frame.getRotation().getW());
+        break;
+      }
+      catch (tf::TransformException &ex)
+      {
+        ROS_ERROR("%s", ex.what());
+        ros::Duration(1.0).sleep();
+      }
+    }
+
+    geometry_msgs::TransformStamped base2mailbox;
+    base2mailbox.transform.rotation.x = mailbox_frame.getRotation().getX();
+    base2mailbox.transform.rotation.y = mailbox_frame.getRotation().getY();
+    base2mailbox.transform.rotation.z = mailbox_frame.getRotation().getZ();
+    base2mailbox.transform.rotation.w = mailbox_frame.getRotation().getW();
+    base2mailbox.transform.translation.x = mailbox_frame.getOrigin().getX();
+    base2mailbox.transform.translation.y = mailbox_frame.getOrigin().getY();
+    base2mailbox.transform.translation.z = mailbox_frame.getOrigin().getZ();
+    static_broadcaster.sendTransform(std::vector<geometry_msgs::TransformStamped>());
+
+    // 设置 transform 的时间戳、参考系名称和子参考系名称
+    base2mailbox.header.stamp = ros::Time::now();
+    base2mailbox.header.frame_id = "base";
+    base2mailbox.child_frame_id = "mailbox";
+
+    // 发布 transform
+    static_br_base2mailbox.sendTransform(base2mailbox);
+
 }
 
 int main(int argc, char** argv)
 {
     ros::init(argc, argv, "camera_broadcaster"); //初始化ROS节点与节点名称
     ros::NodeHandle n;
-    // ros::Rate loop_rate(10);
     
     ros::Subscriber sub = n.subscribe("camera_data", 10, &cameraCallback);
-    //控制节点运行的频率,与loop.sleep共同使用
-    ROS_INFO("subsrcober running");
+    ROS_INFO("subsrciber running");
     ros::spin();  
     return 0;
 }
