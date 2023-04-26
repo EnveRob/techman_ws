@@ -47,6 +47,28 @@ void cameraCallback(const std_msgs::String::ConstPtr& msg)
     mail2camera.transform.translation.y = v[1];
     mail2camera.transform.translation.z = v[2] - gripper_offset;
 
+    // 將座標改為z軸向上
+    q.setX(mail2camera.transform.rotation.x);
+    q.setY(mail2camera.transform.rotation.y);
+    q.setZ(mail2camera.transform.rotation.z);
+    q.setW(mail2camera.transform.rotation.w);
+
+    // 定義旋轉軸和旋轉角度
+    tf::Vector3 axis(1, 0, 0);
+    double angle = -M_PI/2;
+
+    // 將旋轉軸和旋轉角度轉換為四元數
+    tf::Quaternion rotation;
+    rotation.setRotation(axis, angle);
+
+    q *= rotation;
+    q.normalize();
+
+    mail2camera.transform.rotation.x = q.x();
+    mail2camera.transform.rotation.y = q.y();
+    mail2camera.transform.rotation.z = q.z();
+    mail2camera.transform.rotation.w = q.w();
+
     // 设置 transform 的时间戳、参考系名称和子参考系名称
     mail2camera.header.stamp = ros::Time::now();
     mail2camera.header.frame_id = "camera";
@@ -70,7 +92,7 @@ void cameraCallback(const std_msgs::String::ConstPtr& msg)
       {
         listener.waitForTransform("base", "mailbox", ros::Time(0), ros::Duration(3.0));
         listener.lookupTransform("base", "mailbox", ros::Time(0), mailbox_frame);
-        ROS_INFO("Transform: \n%.2f, %.2f, %.2f, \n%.2f, %.2f, %.2f, %.2f",
+        ROS_INFO("\nMailbox before rotated \n(x, y, z): %.2f, %.2f, %.2f, \n(qx, qy, qz, qw): %.2f, %.2f, %.2f, %.2f",
                   mailbox_frame.getOrigin().getX(),
                   mailbox_frame.getOrigin().getY(),
                   mailbox_frame.getOrigin().getZ(),
@@ -95,6 +117,7 @@ void cameraCallback(const std_msgs::String::ConstPtr& msg)
     base2mailbox.transform.translation.x = mailbox_frame.getOrigin().getX();
     base2mailbox.transform.translation.y = mailbox_frame.getOrigin().getY();
     base2mailbox.transform.translation.z = mailbox_frame.getOrigin().getZ();
+
     static_broadcaster.sendTransform(std::vector<geometry_msgs::TransformStamped>());
 
     // 设置 transform 的时间戳、参考系名称和子参考系名称
@@ -105,6 +128,31 @@ void cameraCallback(const std_msgs::String::ConstPtr& msg)
     // 发布 transform
     static_br_base2mailbox.sendTransform(base2mailbox);
 
+    // 聽取轉換
+    tf::TransformListener listener2;
+    tf::StampedTransform mailbox_fixed;
+    while (ros::ok())
+    {
+      try
+      {
+        listener2.waitForTransform("base", "mailbox", ros::Time(0), ros::Duration(3.0));
+        listener2.lookupTransform("base", "mailbox", ros::Time(0), mailbox_fixed);
+        ROS_INFO("\nMailbox after rotated \n(x, y, z): %.2f, %.2f, %.2f, \n(qx, qy, qz, qw): %.2f, %.2f, %.2f, %.2f",
+                  mailbox_fixed.getOrigin().getX(),
+                  mailbox_fixed.getOrigin().getY(),
+                  mailbox_fixed.getOrigin().getZ(),
+                  mailbox_fixed.getRotation().getX(),
+                  mailbox_fixed.getRotation().getY(),
+                  mailbox_fixed.getRotation().getZ(),
+                  mailbox_fixed.getRotation().getW());
+        break;
+      }
+      catch (tf::TransformException &ex)
+      {
+        ROS_ERROR("%s", ex.what());
+        ros::Duration(1.0).sleep();
+      }
+    }
 }
 
 int main(int argc, char** argv)
