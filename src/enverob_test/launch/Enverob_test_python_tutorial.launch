@@ -1,4 +1,0 @@
-<launch>
-  <node name="Enverob_test_python_node" pkg="enverob_test" type="Enverob_test.py" respawn="false" output="screen">
-  </node>
-</launch>
