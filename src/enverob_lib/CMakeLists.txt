@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.0.2)
-project(tf_transform)
+project(enverob_lib)
 
 ## Compile as C++11, supported in ROS Kinetic and newer
 # add_compile_options(-std=c++11)
@@ -12,8 +12,8 @@ find_package(catkin REQUIRED COMPONENTS
   tf
   tf2
   tf2_ros
-  tm_msgs
   std_msgs
+  geometry_msgs
   moveit_core
   moveit_ros_planning
   moveit_ros_planning_interface
@@ -110,7 +110,7 @@ find_package(catkin REQUIRED COMPONENTS
 ## DEPENDS: system dependencies of this project that dependent projects also need
 catkin_package(
 #  INCLUDE_DIRS include
-#  LIBRARIES tf_transform
+#  LIBRARIES enverob_lib
 #  CATKIN_DEPENDS roscpp rospy tf
 #  DEPENDS system_lib
   CATKIN_DEPENDS 
@@ -129,13 +129,13 @@ catkin_package(
 ## Specify additional locations of header files
 ## Your package locations should be listed before other locations
 include_directories(
-  # include
+  include
   ${catkin_INCLUDE_DIRS}
 )
 
 ## Declare a C++ library
 # add_library(${PROJECT_NAME}
-#   src/${PROJECT_NAME}/tf_transform.cpp
+#   src/${PROJECT_NAME}/enverob_lib.cpp
 # )
 
 ## Add cmake target dependencies of the library
@@ -146,7 +146,10 @@ include_directories(
 ## Declare a C++ executable
 ## With catkin_make all packages are built within a single CMake context
 ## The recommended prefix ensures that target names across packages don't collide
-# add_executable(${PROJECT_NAME}_node src/tf_transform_node.cpp)
+
+add_executable(feedback_controller src/feedback_controller.cpp)
+add_executable(camera_broadcaster src/camera_broadcaster.cpp)
+add_executable(arm_move src/arm_move.cpp)
 
 ## Rename C++ executable without prefix
 ## The above recommended prefix causes long target names, the following renames the
@@ -157,11 +160,12 @@ include_directories(
 ## Add cmake target dependencies of the executable
 ## same as for the library above
 # add_dependencies(${PROJECT_NAME}_node ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
+add_dependencies(camera_broadcaster ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 
 ## Specify libraries to link a library or executable target against
-# target_link_libraries(${PROJECT_NAME}_node
-#   ${catkin_LIBRARIES}
-# )
+target_link_libraries(feedback_controller ${catkin_LIBRARIES})
+target_link_libraries(camera_broadcaster ${catkin_LIBRARIES})
+target_link_libraries(arm_move ${catkin_LIBRARIES})
 
 #############
 ## Install ##
@@ -210,7 +214,6 @@ include_directories(
 #############
 
 ## Add gtest based cpp test target and link libraries
-# catkin_add_gtest(${PROJECT_NAME}-test test/test_tf_transform.cpp)
 # if(TARGET ${PROJECT_NAME}-test)
 #   target_link_libraries(${PROJECT_NAME}-test ${PROJECT_NAME})
 # endif()
@@ -218,13 +221,3 @@ include_directories(
 
 ## Add folders to be run by python nosetests
 # catkin_add_nosetests(test)
-add_executable(camera_broadcaster src/camera_broadcaster.cpp)
-target_link_libraries(camera_broadcaster ${catkin_LIBRARIES})
-add_dependencies(camera_broadcaster ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
-
-add_executable(arm_listener src/Arm_listener.cpp)
-target_link_libraries(arm_listener ${catkin_LIBRARIES})
-add_dependencies(arm_listener ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
-
-add_executable(moveit_demo src/moveit_demo.cpp)
-target_link_libraries(moveit_demo ${catkin_LIBRARIES})

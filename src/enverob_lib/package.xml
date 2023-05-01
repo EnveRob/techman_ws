@@ -1,8 +1,8 @@
 <?xml version="1.0"?>
 <package format="2">
-  <name>tf_transform</name>
+  <name>enverob_lib</name>
   <version>0.0.0</version>
-  <description>The tf_transform package</description>
+  <description>The enverob_lib package</description>
 
   <!-- One maintainer tag required, multiple allowed, one person per tag -->
   <!-- Example:  -->
@@ -19,7 +19,7 @@
   <!-- Url tags are optional, but multiple are allowed, one per tag -->
   <!-- Optional attribute type can be: website, bugtracker, or repository -->
   <!-- Example: -->
-  <!-- <url type="website">http://wiki.ros.org/tf_transform</url> -->
+  <!-- <url type="website">http://wiki.ros.org/enverob_lib</url> -->
 
 
   <!-- Author tags are optional, multiple are allowed, one per tag -->
@@ -82,6 +82,6 @@
   <!-- The export tag contains other, unspecified, tags -->
   <export>
     <!-- Other tools can request additional information be placed here -->
-    <cpp cflags="-I${prefix}/include" lflags="-L${prefix}/lib -ltf_transform"/>
+    <cpp cflags="-I${prefix}/include" lflags="-L${prefix}/lib -lenverob_lib"/>
   </export>
 </package>

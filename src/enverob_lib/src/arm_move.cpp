@@ -1,3 +1,4 @@
+#include <arm_move.h>
 #include <ros/ros.h>
 #include <tf/transform_listener.h>
 #include <moveit/move_group_interface/move_group_interface.h>
@@ -21,7 +22,7 @@ void setTargetPosition(moveit::planning_interface::MoveGroupInterface &move_grou
 int main(int argc, char **argv)
 {
   // ------------------------ 初始化程式碼 ------------------------
-  ros::init(argc, argv, "moveit_demo");
+  ros::init(argc, argv, "arm_move");
   ros::NodeHandle node_handle;
   ros::AsyncSpinner spinner(1);
   spinner.start();
