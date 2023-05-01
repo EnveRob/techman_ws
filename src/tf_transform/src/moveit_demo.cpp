@@ -3,6 +3,10 @@
 #include <moveit/move_group_interface/move_group_interface.h>
 #include <geometry_msgs/Quaternion.h>
 
+// 宣告常數
+static const std::string PLANNING_GROUP = "tmr_arm";         // 机械臂规划组的名称
+static const std::string END_EFFECTOR_LINK = "gripper_link"; // 机械臂终端执行器的名称
+
 // 宣告以moveit控制機械手臂的關節角度的函式
 void setJointangle(
     moveit::planning_interface::MoveGroupInterface &move_group,
@@ -12,14 +16,13 @@ void setJointangle(
 // 宣告將機械手臂移動到指定位置的函式
 void setTargetPosition(moveit::planning_interface::MoveGroupInterface &move_group,
                        moveit::planning_interface::MoveGroupInterface::Plan &my_plan,
-                       double x, double y, double z,
-                       double qx, double qy, double qz, double qw);
+                       tf::StampedTransform target);
 
 int main(int argc, char **argv)
 {
+  // ------------------------ 初始化程式碼 ------------------------
   ros::init(argc, argv, "moveit_demo");
   ros::NodeHandle node_handle;
-  ros::Rate loop_rate(10); // 控制节点运行的频率,与loop.sleep共同使用
   ros::AsyncSpinner spinner(1);
   spinner.start();
 
@@ -27,20 +30,19 @@ int main(int argc, char **argv)
   tf::TransformListener listener;
   tf::StampedTransform targetTransform;
 
-  // 指定机械臂规划组的名称
-  static const std::string PLANNING_GROUP = "tmr_arm";
-
   // 创建MoveGroupInterface对象，用于规划和控制机械臂
   moveit::planning_interface::MoveGroupInterface move_group(PLANNING_GROUP);
   move_group.setGoalTolerance(0.005);
-  // move_group.setPlannerId("RRTstar");
+  move_group.setEndEffectorLink(END_EFFECTOR_LINK);
 
   moveit::planning_interface::MoveGroupInterface::Plan my_plan;
 
+  // ------------------------ 手臂往信箱移動 ------------------------
   // 將機械手臂移動到初始位置
   std::vector<double> target_joint{-M_PI, -M_PI / 3, M_PI / 3 * 2, -M_PI / 3, M_PI / 2, -M_PI / 2};
   setJointangle(move_group, my_plan, target_joint);
 
+  // 旋轉機械手臂，尋找信箱
   double rotation_step = 0.1745;
   double current_direction = target_joint[0] + rotation_step;
   bool find_mailbox = 0;
@@ -48,7 +50,7 @@ int main(int argc, char **argv)
   {
     target_joint[0] = current_direction;
     setJointangle(move_group, my_plan, target_joint);
-    if (listener.waitForTransform("base", "mailbox", ros::Time(0), ros::Duration(3))) // 等待3s，如果3s之后都还没收到消息，那么之前的消息就被丢弃掉。
+    if (listener.waitForTransform("base", "mailbox", ros::Time(0), ros::Duration(3)))
     {
       listener.lookupTransform("base", "mailbox", ros::Time(0), targetTransform);
       std::cout << "targetTransform.getOrigin().getX(): " << targetTransform.getOrigin().getX() << std::endl;
@@ -62,20 +64,11 @@ int main(int argc, char **argv)
       break;
     }
     current_direction += rotation_step;
-    loop_rate.sleep();
   }
 
   if (find_mailbox)
   {
-    // 呼叫 setTargetPosition 函式，將機械手臂移動到指定位置
-    setTargetPosition(move_group, my_plan,
-                      targetTransform.getOrigin().getX(),
-                      targetTransform.getOrigin().getY(),
-                      targetTransform.getOrigin().getZ(),
-                      targetTransform.getRotation().getX(),
-                      targetTransform.getRotation().getY(),
-                      targetTransform.getRotation().getZ(),
-                      targetTransform.getRotation().getW());
+    setTargetPosition(move_group, my_plan, targetTransform);
   }
   else
   {
@@ -88,19 +81,22 @@ int main(int argc, char **argv)
 void setJointangle(
     moveit::planning_interface::MoveGroupInterface &move_group,
     moveit::planning_interface::MoveGroupInterface::Plan &my_plan,
-    std::vector<double> joint_group_positions) // joint1~6分别代表六个关节的角度,单位为弧度
+    std::vector<double> joint_group_positions // joint1~6分别代表六个关节的角度,单位为弧度
+)
 {
+  std::cout << "current direction: " << joint_group_positions[0] << std::endl;
   move_group.setJointValueTarget(joint_group_positions);
   move_group.move();
 
+  // 等待機械手臂到達目標位置
   bool joints_reached_goal = false;
+  std::vector<double> current_joint_positions;
   while (joints_reached_goal != 1)
   {
-    std::vector<double> current_joint_positions = move_group.getCurrentJointValues();
-
+    current_joint_positions = move_group.getCurrentJointValues();
     for (size_t i = 0; i < joint_group_positions.size(); ++i)
     {
-      if (std::abs(abs(current_joint_positions[i] - joint_group_positions[i])) > 0.01) // 0.01为容差值
+      if (std::abs(abs(current_joint_positions[i] - joint_group_positions[i])) > 0.01)
       {
         joints_reached_goal = false;
         break;
@@ -112,14 +108,12 @@ void setJointangle(
     }
   }
   std::cout << "joints_reached_goal" << std::endl;
-  std::cout << "current direction: " << joint_group_positions[0] << std::endl;
 }
 
 void setTargetPosition(
     moveit::planning_interface::MoveGroupInterface &move_group,
     moveit::planning_interface::MoveGroupInterface::Plan &my_plan,
-    double x, double y, double z,
-    double qx, double qy, double qz, double qw)
+    tf::StampedTransform target)
 {
   // 获取机械臂的当前姿态
   moveit::core::RobotStatePtr current_state = move_group.getCurrentState();
@@ -127,24 +121,19 @@ void setTargetPosition(
   current_state->copyJointGroupPositions(
       move_group.getCurrentState()->getRobotModel()->getJointModelGroup(move_group.getName()),
       joint_group_positions);
-  geometry_msgs::PoseStamped current_pose = move_group.getCurrentPose();
-
-  // 获取机械臂的末端执行器链接名称
-  move_group.setEndEffectorLink("gripper_link");
-  std::string end_effector_link = move_group.getEndEffectorLink();
 
   // 创建要移动到的目标位置
   geometry_msgs::Pose target_pose;
-  target_pose.position.x = x;
-  target_pose.position.y = y;
-  target_pose.position.z = z;
-  target_pose.orientation.x = qx;
-  target_pose.orientation.y = qy;
-  target_pose.orientation.z = qz;
-  target_pose.orientation.w = qw;
+  target_pose.position.x = target.getOrigin().getX();
+  target_pose.position.y = target.getOrigin().getY();
+  target_pose.position.z = target.getOrigin().getZ();
+  target_pose.orientation.x = target.getRotation().getX();
+  target_pose.orientation.y = target.getRotation().getY();
+  target_pose.orientation.z = target.getRotation().getZ();
+  target_pose.orientation.w = target.getRotation().getW();
 
   // 将目标位置转换为机械臂的姿态
-  move_group.setPoseTarget(target_pose, end_effector_link);
+  move_group.setPoseTarget(target_pose, END_EFFECTOR_LINK);
   ROS_INFO("\ntarget_pose \n(x, y, z): %.2f, %.2f, %.2f, \n(qx, qy, qz, qw): %.2f, %.2f, %.2f, %.2f",
            target_pose.position.x, target_pose.position.y, target_pose.position.z,
            target_pose.orientation.x, target_pose.orientation.y, target_pose.orientation.z, target_pose.orientation.w);
@@ -153,13 +142,11 @@ void setTargetPosition(
   moveit_msgs::MoveItErrorCodes error_code = move_group.plan(my_plan);
   if (error_code.val == moveit_msgs::MoveItErrorCodes::SUCCESS)
   {
-    // 执行机械臂的运动路径
     move_group.execute(my_plan);
     ROS_INFO("Set Target Position");
   }
   else
   {
-    // ROS_ERROR("Failed to plan and execute motion");
     ROS_ERROR("Failed to plan: %d", error_code.val);
   }
 }

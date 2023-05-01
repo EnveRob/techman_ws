@@ -33,7 +33,7 @@ void cameraCallback(const std_msgs::String::ConstPtr &msg)
 
   static tf2_ros::StaticTransformBroadcaster static_broadcaster;
   // static_broadcaster.sendTransform(std::vector<geometry_msgs::TransformStamped>());
-  static tf2_ros::StaticTransformBroadcaster static_br_base2mailbox;
+  // static tf2_ros::StaticTransformBroadcaster static_br_base2mailbox;
   // static_br_base2mailbox.sendTransform(std::vector<geometry_msgs::TransformStamped>());
 
   geometry_msgs::TransformStamped mail2camera;
@@ -114,7 +114,7 @@ void cameraCallback(const std_msgs::String::ConstPtr &msg)
   base2mailbox.transform.translation.y = mailbox_frame.getOrigin().getY();
   base2mailbox.transform.translation.z = mailbox_frame.getOrigin().getZ();
 
-  static_broadcaster.sendTransform(std::vector<geometry_msgs::TransformStamped>());
+  // static_broadcaster.sendTransform(std::vector<geometry_msgs::TransformStamped>());
 
   // 设置 transform 的时间戳、参考系名称和子参考系名称
   base2mailbox.header.stamp = ros::Time::now();
@@ -122,7 +122,8 @@ void cameraCallback(const std_msgs::String::ConstPtr &msg)
   base2mailbox.child_frame_id = "mailbox";
 
   // 发布 transform
-  static_br_base2mailbox.sendTransform(base2mailbox);
+  // static_br_base2mailbox.sendTransform(base2mailbox);
+  static_broadcaster.sendTransform(base2mailbox);
 
   // 聽取轉換
   tf::TransformListener listener2;
@@ -153,7 +154,7 @@ void cameraCallback(const std_msgs::String::ConstPtr &msg)
 
 int main(int argc, char **argv)
 {
-  ros::init(argc, argv, "camera_broadcaster"); // 初始化ROS节点与节点名称
+  ros::init(argc, argv, "camera_broadcaster");
   ros::NodeHandle n;
 
   ros::Subscriber sub = n.subscribe("camera_data", 10, &cameraCallback);
