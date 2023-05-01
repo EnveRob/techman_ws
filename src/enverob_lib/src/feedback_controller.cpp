@@ -221,23 +221,6 @@ void move_arm(moveit::planning_interface::MoveGroupInterface &move_group, Feedba
       while (joints_reached_goal != true)
       {
         current_joint_positions = move_group.getCurrentJointValues();
-        // // 輸出my_plan.trajectory_.joint_trajectory.points[i].positions的值
-        // ROS_INFO("my_plan.trajectory_.joint_trajectory.points.positions: %.2f, %.2f, %.2f, %.2f, %.2f, %.2f",
-        //          my_plan.trajectory_.joint_trajectory.points[i].positions[0],
-        //          my_plan.trajectory_.joint_trajectory.points[i].positions[1],
-        //          my_plan.trajectory_.joint_trajectory.points[i].positions[2],
-        //          my_plan.trajectory_.joint_trajectory.points[i].positions[3],
-        //          my_plan.trajectory_.joint_trajectory.points[i].positions[4],
-        //          my_plan.trajectory_.joint_trajectory.points[i].positions[5]);
-
-        // // 輸出current_joint_positions的值
-        // ROS_INFO("current_joint_positions: %.2f, %.2f, %.2f, %.2f, %.2f, %.2f",
-        //          current_joint_positions[0],
-        //          current_joint_positions[1],
-        //          current_joint_positions[2],
-        //          current_joint_positions[3],
-        //          current_joint_positions[4],
-        //          current_joint_positions[5]);
 
         for (size_t j = 0; j < my_plan.trajectory_.joint_trajectory.points[i].positions.size(); ++j)
         {
@@ -264,75 +247,75 @@ void move_arm(moveit::planning_interface::MoveGroupInterface &move_group, Feedba
   }
 }
 
-// void newFrame(moveit::planning_interface::MoveGroupInterface &move_group, std::string trarget_frame_id)
-// {
-//   // 设置目标位置所使用的参考坐标系
-//   static tf2_ros::StaticTransformBroadcaster static_br_tool2mailbox;
-//   geometry_msgs::TransformStamped tool2mailbox;
+void newFrame(moveit::planning_interface::MoveGroupInterface &move_group, std::string trarget_frame_id)
+{
+  // 设置目标位置所使用的参考坐标系
+  static tf2_ros::StaticTransformBroadcaster static_br_tool2mailbox;
+  geometry_msgs::TransformStamped tool2mailbox;
 
-//   // Get the current pose of the end effector link
-//   geometry_msgs::PoseStamped current_pose = move_group.getCurrentPose();
-//   tf::Quaternion q;
-//   q.setRPY(M_PI, 0, 0);
-//   tool2mailbox.transform.rotation.x = q.x();
-//   tool2mailbox.transform.rotation.y = q.y();
-//   tool2mailbox.transform.rotation.z = q.z();
-//   tool2mailbox.transform.rotation.w = q.w();
-//   tool2mailbox.transform.translation.x = current_pose.pose.position.x;
-//   tool2mailbox.transform.translation.y = current_pose.pose.position.y;
-//   tool2mailbox.transform.translation.z = current_pose.pose.position.z;
+  // Get the current pose of the end effector link
+  geometry_msgs::PoseStamped current_pose = move_group.getCurrentPose();
+  tf::Quaternion q;
+  q.setRPY(M_PI, 0, 0);
+  tool2mailbox.transform.rotation.x = q.x();
+  tool2mailbox.transform.rotation.y = q.y();
+  tool2mailbox.transform.rotation.z = q.z();
+  tool2mailbox.transform.rotation.w = q.w();
+  tool2mailbox.transform.translation.x = current_pose.pose.position.x;
+  tool2mailbox.transform.translation.y = current_pose.pose.position.y;
+  tool2mailbox.transform.translation.z = current_pose.pose.position.z;
 
-//   // 设置 transform 的时间戳、参考系名称和子参考系名称
-//   tool2mailbox.header.stamp = ros::Time::now();
-//   tool2mailbox.header.frame_id = "gripper_link";
-//   tool2mailbox.child_frame_id = trarget_frame_id;
+  // 设置 transform 的时间戳、参考系名称和子参考系名称
+  tool2mailbox.header.stamp = ros::Time::now();
+  tool2mailbox.header.frame_id = "gripper_link";
+  tool2mailbox.child_frame_id = trarget_frame_id;
 
-//   // 发布 transform
-//   static_br_tool2mailbox.sendTransform(tool2mailbox);
+  // 发布 transform
+  static_br_tool2mailbox.sendTransform(tool2mailbox);
 
-//   // 聽取轉換
-//   tf::TransformListener listener;
-//   tf::StampedTransform mailbox_wall;
+  // 聽取轉換
+  tf::TransformListener listener;
+  tf::StampedTransform mailbox_wall;
 
-//   while (ros::ok())
-//   {
-//     try
-//     {
-//       listener.waitForTransform("base", trarget_frame_id, ros::Time(0), ros::Duration(3.0));
-//       listener.lookupTransform("base", trarget_frame_id, ros::Time(0), mailbox_wall);
-//       ROS_INFO("Transform: \n%.2f, %.2f, %.2f, \n%.2f, %.2f, %.2f, %.2f)",
-//                mailbox_wall.getOrigin().getX(),
-//                mailbox_wall.getOrigin().getY(),
-//                mailbox_wall.getOrigin().getZ(),
-//                mailbox_wall.getRotation().getX(),
-//                mailbox_wall.getRotation().getY(),
-//                mailbox_wall.getRotation().getZ(),
-//                mailbox_wall.getRotation().getW());
-//       break;
-//     }
-//     catch (tf::TransformException &ex)
-//     {
-//       ROS_ERROR("%s", ex.what());
-//       ros::Duration(1.0).sleep();
-//     }
-//   }
+  while (ros::ok())
+  {
+    try
+    {
+      listener.waitForTransform("base", trarget_frame_id, ros::Time(0), ros::Duration(3.0));
+      listener.lookupTransform("base", trarget_frame_id, ros::Time(0), mailbox_wall);
+      ROS_INFO("Transform: \n%.2f, %.2f, %.2f, \n%.2f, %.2f, %.2f, %.2f)",
+               mailbox_wall.getOrigin().getX(),
+               mailbox_wall.getOrigin().getY(),
+               mailbox_wall.getOrigin().getZ(),
+               mailbox_wall.getRotation().getX(),
+               mailbox_wall.getRotation().getY(),
+               mailbox_wall.getRotation().getZ(),
+               mailbox_wall.getRotation().getW());
+      break;
+    }
+    catch (tf::TransformException &ex)
+    {
+      ROS_ERROR("%s", ex.what());
+      ros::Duration(1.0).sleep();
+    }
+  }
 
-//   static tf2_ros::StaticTransformBroadcaster static_br_base2mailboxWall;
-//   geometry_msgs::TransformStamped base2mailboxWall;
-//   base2mailboxWall.transform.rotation.x = mailbox_wall.getRotation().getX();
-//   base2mailboxWall.transform.rotation.y = mailbox_wall.getRotation().getY();
-//   base2mailboxWall.transform.rotation.z = mailbox_wall.getRotation().getZ();
-//   base2mailboxWall.transform.rotation.w = mailbox_wall.getRotation().getW();
-//   base2mailboxWall.transform.translation.x = mailbox_wall.getOrigin().getX();
-//   base2mailboxWall.transform.translation.y = mailbox_wall.getOrigin().getY();
-//   base2mailboxWall.transform.translation.z = mailbox_wall.getOrigin().getZ();
+  static tf2_ros::StaticTransformBroadcaster static_br_base2mailboxWall;
+  geometry_msgs::TransformStamped base2mailboxWall;
+  base2mailboxWall.transform.rotation.x = mailbox_wall.getRotation().getX();
+  base2mailboxWall.transform.rotation.y = mailbox_wall.getRotation().getY();
+  base2mailboxWall.transform.rotation.z = mailbox_wall.getRotation().getZ();
+  base2mailboxWall.transform.rotation.w = mailbox_wall.getRotation().getW();
+  base2mailboxWall.transform.translation.x = mailbox_wall.getOrigin().getX();
+  base2mailboxWall.transform.translation.y = mailbox_wall.getOrigin().getY();
+  base2mailboxWall.transform.translation.z = mailbox_wall.getOrigin().getZ();
 
-//   // 设置 transform 的时间戳、参考系名称和子参考系名称
-//   base2mailboxWall.header.stamp = ros::Time::now();
-//   base2mailboxWall.header.frame_id = "base";
-//   base2mailboxWall.child_frame_id = trarget_frame_id;
+  // 设置 transform 的时间戳、参考系名称和子参考系名称
+  base2mailboxWall.header.stamp = ros::Time::now();
+  base2mailboxWall.header.frame_id = "base";
+  base2mailboxWall.child_frame_id = trarget_frame_id;
 
-//   // 发布 transform
-//   static_br_base2mailboxWall.sendTransform(base2mailboxWall);
-//   static_br_tool2mailbox.sendTransform(std::vector<geometry_msgs::TransformStamped>());
-// }
+  // 发布 transform
+  static_br_base2mailboxWall.sendTransform(base2mailboxWall);
+  static_br_tool2mailbox.sendTransform(std::vector<geometry_msgs::TransformStamped>());
+}

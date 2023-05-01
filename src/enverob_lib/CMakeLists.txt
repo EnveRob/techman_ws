@@ -137,8 +137,8 @@ include_directories(
 # add_library(${PROJECT_NAME}
 #   src/${PROJECT_NAME}/enverob_lib.cpp
 # )
-add_library(enverob_lib SHARED src/arm_move.cpp)
-target_sources(enverob_lib PRIVATE src/arm_move.cpp)
+add_library(enverob_lib SHARED src/new_frame.cpp src/arm_move.cpp)
+target_sources(enverob_lib PRIVATE src/new_frame.cpp src/arm_move.cpp)
 
 # set include directories
 set(enverob_lib_INCLUDE_DIRS ${CMAKE_CURRENT_SOURCE_DIR}/include)
@@ -156,7 +156,6 @@ target_include_directories(enverob_lib PUBLIC ${enverob_lib_INCLUDE_DIRS})
 ## The recommended prefix ensures that target names across packages don't collide
 
 add_executable(feedback_controller src/feedback_controller.cpp)
-add_executable(camera_broadcaster src/camera_broadcaster.cpp)
 
 ## Rename C++ executable without prefix
 ## The above recommended prefix causes long target names, the following renames the
@@ -171,7 +170,6 @@ add_executable(camera_broadcaster src/camera_broadcaster.cpp)
 
 ## Specify libraries to link a library or executable target against
 target_link_libraries(feedback_controller ${catkin_LIBRARIES})
-target_link_libraries(camera_broadcaster ${catkin_LIBRARIES})
 # target_link_libraries(arm_move ${catkin_LIBRARIES})
 
 #############
