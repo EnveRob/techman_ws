@@ -3,7 +3,6 @@
 #include <tf2_ros/static_transform_broadcaster.h>
 #include <geometry_msgs/TransformStamped.h>
 
-// const double gripper_offset = 0.10;
 namespace new_frame
 {
   void fixedFrame_add(std::vector<double> frame_pose,
@@ -21,6 +20,15 @@ namespace new_frame
     ref2target.transform.rotation.y = frame_pose[4];
     ref2target.transform.rotation.z = frame_pose[5];
     ref2target.transform.rotation.w = frame_pose[6];
+
+    ROS_INFO("\nMailbox positon related to reference \n(x, y, z): %.2f, %.2f, %.2f, \n(qx, qy, qz, qw): %.2f, %.2f, %.2f, %.2f",
+             frame_pose[0],
+             frame_pose[1],
+             frame_pose[2],
+             frame_pose[3],
+             frame_pose[4],
+             frame_pose[5],
+             frame_pose[6]);
 
     // 设置 transform 的时间戳、参考系名称和子参考系名称
     ref2target.header.stamp = ros::Time::now();
@@ -40,7 +48,7 @@ namespace new_frame
       {
         listener.waitForTransform("base", target_frame, ros::Time(0), ros::Duration(3.0));
         listener.lookupTransform("base", target_frame, ros::Time(0), target_fixed);
-        ROS_INFO("\nMailbox before rotated \n(x, y, z): %.2f, %.2f, %.2f, \n(qx, qy, qz, qw): %.2f, %.2f, %.2f, %.2f",
+        ROS_INFO("\nMailbox positon related to base \n(x, y, z): %.2f, %.2f, %.2f, \n(qx, qy, qz, qw): %.2f, %.2f, %.2f, %.2f",
                  target_fixed.getOrigin().getX(),
                  target_fixed.getOrigin().getY(),
                  target_fixed.getOrigin().getZ(),
