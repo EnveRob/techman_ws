@@ -14,38 +14,13 @@ namespace new_frame
     geometry_msgs::TransformStamped ref2target;
 
     // ------------------ 設定相對參考至目標的轉換 ------------------
-    tf::Quaternion q;
-    q.setRPY(frame_pose[3], frame_pose[4], frame_pose[5]); // 以弧度為單位
-    ref2target.transform.rotation.x = q.x();
-    ref2target.transform.rotation.y = q.y();
-    ref2target.transform.rotation.z = q.z();
-    ref2target.transform.rotation.w = q.w();
     ref2target.transform.translation.x = frame_pose[0];
     ref2target.transform.translation.y = frame_pose[1];
     ref2target.transform.translation.z = frame_pose[2];
-    // ref2target.transform.translation.z = frame_pose[2] - gripper_offset;
-
-    // ------------------ 將座標改為z軸向上 ------------------
-    q.setX(ref2target.transform.rotation.x);
-    q.setY(ref2target.transform.rotation.y);
-    q.setZ(ref2target.transform.rotation.z);
-    q.setW(ref2target.transform.rotation.w);
-
-    // 定義旋轉軸和旋轉角度
-    tf::Vector3 axis(1, 0, 0);
-    double angle = -M_PI / 2;
-
-    // 將旋轉軸和旋轉角度轉換為四元數
-    tf::Quaternion rotation;
-    rotation.setRotation(axis, angle);
-
-    q *= rotation;
-    q.normalize();
-
-    ref2target.transform.rotation.x = q.x();
-    ref2target.transform.rotation.y = q.y();
-    ref2target.transform.rotation.z = q.z();
-    ref2target.transform.rotation.w = q.w();
+    ref2target.transform.rotation.x = frame_pose[3];
+    ref2target.transform.rotation.y = frame_pose[4];
+    ref2target.transform.rotation.z = frame_pose[5];
+    ref2target.transform.rotation.w = frame_pose[6];
 
     // 设置 transform 的时间戳、参考系名称和子参考系名称
     ref2target.header.stamp = ros::Time::now();

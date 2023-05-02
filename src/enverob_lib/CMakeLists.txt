@@ -137,8 +137,18 @@ include_directories(
 # add_library(${PROJECT_NAME}
 #   src/${PROJECT_NAME}/enverob_lib.cpp
 # )
-add_library(enverob_lib SHARED src/new_frame.cpp src/arm_move.cpp)
-target_sources(enverob_lib PRIVATE src/new_frame.cpp src/arm_move.cpp)
+add_library(enverob_lib 
+  SHARED 
+  src/new_frame.cpp 
+  src/arm_move.cpp
+  src/force_feedback.cpp
+)
+target_sources(enverob_lib 
+  PRIVATE 
+  src/new_frame.cpp 
+  src/arm_move.cpp
+  src/force_feedback.cpp
+)
 
 # set include directories
 set(enverob_lib_INCLUDE_DIRS ${CMAKE_CURRENT_SOURCE_DIR}/include)
@@ -155,8 +165,6 @@ target_include_directories(enverob_lib PUBLIC ${enverob_lib_INCLUDE_DIRS})
 ## With catkin_make all packages are built within a single CMake context
 ## The recommended prefix ensures that target names across packages don't collide
 
-add_executable(feedback_controller src/feedback_controller.cpp)
-
 ## Rename C++ executable without prefix
 ## The above recommended prefix causes long target names, the following renames the
 ## target back to the shorter version for ease of user use
@@ -166,11 +174,8 @@ add_executable(feedback_controller src/feedback_controller.cpp)
 ## Add cmake target dependencies of the executable
 ## same as for the library above
 # add_dependencies(${PROJECT_NAME}_node ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
-# add_dependencies(camera_broadcaster ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 
 ## Specify libraries to link a library or executable target against
-target_link_libraries(feedback_controller ${catkin_LIBRARIES})
-# target_link_libraries(arm_move ${catkin_LIBRARIES})
 
 #############
 ## Install ##

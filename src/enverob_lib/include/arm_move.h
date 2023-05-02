@@ -1,7 +1,5 @@
 #ifndef ARM_MOVE_H
 #define ARM_MOVE_H
-#define PLANNING_GROUP "tmr_arm"         // 机械臂规划组的名称
-#define END_EFFECTOR_LINK "gripper_link" // 机械臂终端执行器的名称
 
 #include <tf/transform_listener.h>
 #include <moveit/move_group_interface/move_group_interface.h>
@@ -17,6 +15,12 @@ namespace arm_move
     void setTargetPosition(moveit::planning_interface::MoveGroupInterface &move_group,
                            moveit::planning_interface::MoveGroupInterface::Plan &my_plan,
                            tf::StampedTransform target);
+
+    void setRelativePosition(
+        moveit::planning_interface::MoveGroupInterface &move_group,
+        moveit::planning_interface::MoveGroupInterface::Plan &my_plan,
+        tf::StampedTransform target_pose,
+        std::string reference_frame);
 }
 
 #endif
