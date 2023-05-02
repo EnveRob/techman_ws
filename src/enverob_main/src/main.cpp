@@ -158,10 +158,10 @@ void cameraCallback(const std_msgs::String::ConstPtr &msg)
         mailbox_40cm_rear_transform.push_back(q.w());
 
         // ------------------------ 將座標改為z軸向上 ------------------------
-        q.setX(mailbox_40cm_rear_transform.transform.rotation.x);
-        q.setY(mailbox_40cm_rear_transform.transform.rotation.y);
-        q.setZ(mailbox_40cm_rear_transform.transform.rotation.z);
-        q.setW(mailbox_40cm_rear_transform.transform.rotation.w);
+        q.setX(mailbox_40cm_rear_transform[3]);
+        q.setY(mailbox_40cm_rear_transform[4]);
+        q.setZ(mailbox_40cm_rear_transform[5]);
+        q.setW(mailbox_40cm_rear_transform[6]);
 
         // 定義旋轉軸和旋轉角度
         tf::Vector3 axis(1, 0, 0);
