@@ -180,8 +180,8 @@ void cameraCallback(const std_msgs::String::ConstPtr &msg)
         mailbox_40cm_rear_transform[6] = q.w();
 
         // ------------------------ 將座標平移至信箱40公分處座標 ------------------------
-        mailbox_40cm_rear_transform[1] += 0.4;
-        mailbox_40cm_rear_transform[1] += GRIPPER_OFFSET_D;
+        mailbox_40cm_rear_transform[3] -= 0.4;
+        mailbox_40cm_rear_transform[3] -= GRIPPER_OFFSET_D;
         mailbox_40cm_rear_transform[2] += GRIPPER_OFFSET_H;
 
         // ------------------------ 發布信箱座標 ------------------------
