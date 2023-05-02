@@ -38,8 +38,8 @@ namespace new_frame
     {
       try
       {
-        listener.waitForTransform("base", "mailbox", ros::Time(0), ros::Duration(3.0));
-        listener.lookupTransform("base", "mailbox", ros::Time(0), target_fixed);
+        listener.waitForTransform("base", target_frame, ros::Time(0), ros::Duration(3.0));
+        listener.lookupTransform("base", target_frame, ros::Time(0), target_fixed);
         ROS_INFO("\nMailbox before rotated \n(x, y, z): %.2f, %.2f, %.2f, \n(qx, qy, qz, qw): %.2f, %.2f, %.2f, %.2f",
                  target_fixed.getOrigin().getX(),
                  target_fixed.getOrigin().getY(),

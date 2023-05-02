@@ -172,6 +172,6 @@ void cameraCallback(const std_msgs::String::ConstPtr &msg)
         mailbox_40cm_rear_transform[2] += GRIPPER_OFFSET_H;
 
         // ------------------------ 發布信箱座標 ------------------------
-        new_frame::fixedFrame_add(mailbox_40cm_rear_transform, "gripper_link", "mailbox_40cm_rear");
+        new_frame::fixedFrame_add(mailbox_40cm_rear_transform, "camera", "mailbox_40cm_rear");
     }
 }
