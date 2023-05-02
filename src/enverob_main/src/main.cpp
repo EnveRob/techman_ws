@@ -38,6 +38,7 @@ int main(int argc, char **argv)
     // ------------------------ 手臂往距離信箱40公分處移動 ------------------------
     // 將機械手臂移動到初始位置
     // std::vector<double> target_joint{-M_PI, -M_PI / 3, M_PI / 3 * 2, -M_PI / 3, M_PI / 2, -M_PI / 2};
+    ROS_INFO("Move to initial position");
     std::vector<double> target_joint{-M_PI * 0.75, -M_PI / 3, M_PI / 3 * 2, -M_PI / 3, M_PI / 2, -M_PI / 2};
     arm_move::setJointangle(move_group, my_plan, target_joint);
 
