@@ -5,6 +5,33 @@
 
 namespace new_frame
 {
+  void waitforTransform(std::string target_frame, tf::StampedTransform target_transform)
+  {
+    tf::TransformListener listener;
+    while (ros::ok())
+    {
+      try
+      {
+        listener.waitForTransform("base", target_frame, ros::Time(0), ros::Duration(3.0));
+        listener.lookupTransform("base", target_frame, ros::Time(0), target_transform);
+        ROS_INFO("Target positon related to base \n(x, y, z): %.2f, %.2f, %.2f, \n(qx, qy, qz, qw): %.2f, %.2f, %.2f, %.2f",
+                 target_transform.getOrigin().getX(),
+                 target_transform.getOrigin().getY(),
+                 target_transform.getOrigin().getZ(),
+                 target_transform.getRotation().getX(),
+                 target_transform.getRotation().getY(),
+                 target_transform.getRotation().getZ(),
+                 target_transform.getRotation().getW());
+        break;
+      }
+      catch (tf::TransformException &ex)
+      {
+        ROS_ERROR("%s", ex.what());
+        ros::Duration(1.0).sleep();
+      }
+    }
+  }
+
   void fixedFrame_add(std::vector<double> frame_pose,
                       std::string reference_frame,
                       std::string target_frame)
@@ -39,31 +66,8 @@ namespace new_frame
     static_broadcaster.sendTransform(ref2target);
 
     // 聽取轉換
-    tf::TransformListener listener;
     tf::StampedTransform target_fixed;
-
-    while (ros::ok())
-    {
-      try
-      {
-        listener.waitForTransform("base", target_frame, ros::Time(0), ros::Duration(3.0));
-        listener.lookupTransform("base", target_frame, ros::Time(0), target_fixed);
-        ROS_INFO("\nMailbox positon related to base \n(x, y, z): %.2f, %.2f, %.2f, \n(qx, qy, qz, qw): %.2f, %.2f, %.2f, %.2f",
-                 target_fixed.getOrigin().getX(),
-                 target_fixed.getOrigin().getY(),
-                 target_fixed.getOrigin().getZ(),
-                 target_fixed.getRotation().getX(),
-                 target_fixed.getRotation().getY(),
-                 target_fixed.getRotation().getZ(),
-                 target_fixed.getRotation().getW());
-        break;
-      }
-      catch (tf::TransformException &ex)
-      {
-        ROS_ERROR("%s", ex.what());
-        ros::Duration(1.0).sleep();
-      }
-    }
+    waitforTransform(target_frame, target_fixed);
 
     geometry_msgs::TransformStamped base2target;
     base2target.transform.rotation.x = target_fixed.getRotation().getX();

@@ -1,6 +1,7 @@
 #ifndef ARM_MOVE_H
 #define ARM_MOVE_H
 
+#include "force_feedback.h"
 #include <tf/transform_listener.h>
 #include <moveit/move_group_interface/move_group_interface.h>
 
@@ -19,8 +20,16 @@ namespace arm_move
     void setRelativePosition(
         moveit::planning_interface::MoveGroupInterface &move_group,
         moveit::planning_interface::MoveGroupInterface::Plan &my_plan,
-        tf::StampedTransform target_pose,
-        std::string reference_frame);
+        std::string reference_frame,
+        std::vector<double> value_adjust // x, y, z, theta
+    );
+
+    void setRelativePosition(
+        moveit::planning_interface::MoveGroupInterface &move_group,
+        moveit::planning_interface::MoveGroupInterface::Plan &my_plan,
+        std::string reference_frame,
+        std::vector<double> value_adjust, // x, y, z, theta
+        force_feedback::ForceCallback feedback_controller);
 }
 
 #endif

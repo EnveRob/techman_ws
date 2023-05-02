@@ -1,5 +1,6 @@
 #include "std_msgs/UInt8.h"
 #include "arm_move.h"
+#include "new_frame.h"
 #include <tf/transform_listener.h>
 
 namespace arm_move
@@ -85,167 +86,148 @@ namespace arm_move
     }
   }
 
-  // void setRelativePosition(
-  //     moveit::planning_interface::MoveGroupInterface &move_group,
-  //     moveit::planning_interface::MoveGroupInterface::Plan &my_plan,
-  //     tf::StampedTransform target_pose,
-  //     std::string reference_frame,
-  //     std::vector<double> value_adjust = {0, 0, 0, 0} // x, y, z, theta
-  // )
-  // {
-  //   tf::StampedTransform reference_transform;
-  //   tf::TransformListener listener;
-  //   while (ros::ok())
-  //   {
-  //     try
-  //     {
-  //       listener.waitForTransform("base", reference_frame, ros::Time(0), ros::Duration(3.0));
-  //       listener.lookupTransform("base", reference_frame, ros::Time(0), reference_transform);
-  //       break;
-  //     }
-  //     catch (tf::TransformException &ex)
-  //     {
-  //       ROS_ERROR("%s", ex.what());
-  //       ros::Duration(1.0).sleep();
-  //     }
-  //   }
+  void setRelativePosition(
+      moveit::planning_interface::MoveGroupInterface &move_group,
+      moveit::planning_interface::MoveGroupInterface::Plan &my_plan,
+      std::string reference_frame,
+      std::vector<double> value_adjust // x, y, z, theta
+  )
+  {
+    tf::StampedTransform reference_transform;
+    new_frame::waitforTransform(reference_frame, reference_transform);
 
-  //   // 計算target_pose
-  //   geometry_msgs::PoseStamped current_pose = move_group.getCurrentPose();
-  //   target_pose.header.frame_id = reference_frame;
+    // 計算target_pose
+    geometry_msgs::PoseStamped current_pose = move_group.getCurrentPose();
+    geometry_msgs::PoseStamped target_pose;
+    target_pose.header.frame_id = reference_frame;
 
-  //   tf::Vector3 reference_position = reference_transform.getOrigin();
-  //   tf::Vector3 current_position;
-  //   current_position.setX(current_pose.pose.position.x);
-  //   current_position.setY(current_pose.pose.position.y);
-  //   current_position.setZ(current_pose.pose.position.z);
+    tf::Vector3 reference_position = reference_transform.getOrigin();
+    tf::Vector3 current_position;
+    current_position.setX(current_pose.pose.position.x);
+    current_position.setY(current_pose.pose.position.y);
+    current_position.setZ(current_pose.pose.position.z);
 
-  //   double r = tf::tfDistance(current_position, reference_position);
-  //   target_pose.pose.position.y = r * cos(value_adjust[3]);
-  //   target_pose.pose.position.z = -r * sin(value_adjust[3]);
-  //   target_pose.pose.orientation = tf::createQuaternionMsgFromRollPitchYaw(0, 0, 0);
+    double r = tf::tfDistance(current_position, reference_position);
+    target_pose.pose.position.y = r * cos(value_adjust[3]);
+    target_pose.pose.position.z = -r * sin(value_adjust[3]);
+    target_pose.pose.orientation = tf::createQuaternionMsgFromRollPitchYaw(-value_adjust[3], 0, 0);
 
-  //   // 輸出target_pose
-  //   ROS_INFO("target_pose: \n(x, y, z): %.2f, %.2f, %.2f, \n(qx, qy, qz, qw): %.2f, %.2f, %.2f, %.2f)",
-  //            target_pose.pose.position.x,
-  //            target_pose.pose.position.y,
-  //            target_pose.pose.position.z,
-  //            target_pose.pose.orientation.x,
-  //            target_pose.pose.orientation.y,
-  //            target_pose.pose.orientation.z,
-  //            target_pose.pose.orientation.w);
+    // 輸出target_pose
+    ROS_INFO("target_pose \n(x, y, z): %.2f, %.2f, %.2f, \n(qx, qy, qz, qw): %.2f, %.2f, %.2f, %.2f)",
+             target_pose.pose.position.x,
+             target_pose.pose.position.y,
+             target_pose.pose.position.z,
+             target_pose.pose.orientation.x,
+             target_pose.pose.orientation.y,
+             target_pose.pose.orientation.z,
+             target_pose.pose.orientation.w);
 
-  //   // 将目标位置转换为机械臂的姿态
-  //   move_group.setPoseTarget(target_pose, end_effector_link);
+    // 将目标位置转换为机械臂的姿态
+    move_group.setPoseTarget(target_pose);
 
-  //   // 规划机械臂的运动路径
-  //   moveit_msgs::MoveItErrorCodes error_code = move_group.plan(my_plan);
-  //   if (error_code.val == moveit_msgs::MoveItErrorCodes::SUCCESS)
-  //   {
-  //     // 执行机械臂的运动路径
-  //     move_group.execute(my_plan);
-  //     ROS_INFO("Set Target Position");
-  //   }
-  //   else
-  //   {
-  //     // ROS_ERROR("Failed to plan and execute motion");
-  //     ROS_ERROR("Failed to plan: %d", error_code.val);
-  //   }
+    // 规划机械臂的运动路径
+    moveit_msgs::MoveItErrorCodes error_code = move_group.plan(my_plan);
 
-  //   target_pose.pose.orientation = tf::createQuaternionMsgFromRollPitchYaw(-value_adjust[3], 0, 0);
+    if (error_code.val == moveit_msgs::MoveItErrorCodes::SUCCESS)
+    {
+      // 执行机械臂的运动路径
+      move_group.execute(my_plan);
+      ROS_INFO("Set Target Position");
+    }
+    else
+    {
+      ROS_ERROR("Failed to plan: %d", error_code.val);
+    }
+  }
 
-  //   // 輸出target_pose
-  //   ROS_INFO("target_pose: \n(x, y, z): %.2f, %.2f, %.2f, \n(qx, qy, qz, qw): %.2f, %.2f, %.2f, %.2f)",
-  //            target_pose.pose.position.x,
-  //            target_pose.pose.position.y,
-  //            target_pose.pose.position.z,
-  //            target_pose.pose.orientation.x,
-  //            target_pose.pose.orientation.y,
-  //            target_pose.pose.orientation.z,
-  //            target_pose.pose.orientation.w);
+  void setRelativePosition(
+      moveit::planning_interface::MoveGroupInterface &move_group,
+      moveit::planning_interface::MoveGroupInterface::Plan &my_plan,
+      std::string reference_frame,
+      std::vector<double> value_adjust, // x, y, z, theta
+      force_feedback::ForceCallback feedback_controller)
+  {
+    tf::StampedTransform reference_transform;
+    new_frame::waitforTransform(reference_frame, reference_transform);
 
-  //   // 将目标位置转换为机械臂的姿态
-  //   move_group.setPoseTarget(target_pose, end_effector_link);
+    // 計算target_pose
+    geometry_msgs::PoseStamped current_pose = move_group.getCurrentPose();
+    geometry_msgs::PoseStamped target_pose;
+    target_pose.header.frame_id = reference_frame;
 
-  //   // 规划机械臂的运动路径
-  //   error_code = move_group.plan(my_plan);
-  //   if (error_code.val == moveit_msgs::MoveItErrorCodes::SUCCESS)
-  //   {
-  //     // 执行机械臂的运动路径
-  //     move_group.execute(my_plan);
-  //     ROS_INFO("Set Target Position");
-  //   }
-  //   else
-  //   {
-  //     // ROS_ERROR("Failed to plan and execute motion");
-  //     ROS_ERROR("Failed to plan: %d", error_code.val);
-  //   }
+    tf::Vector3 reference_position = reference_transform.getOrigin();
+    tf::Vector3 current_position;
+    current_position.setX(current_pose.pose.position.x);
+    current_position.setY(current_pose.pose.position.y);
+    current_position.setZ(current_pose.pose.position.z);
 
-  //   target_pose.pose.position.y = 0;
-  //   target_pose.pose.position.z = 0;
+    double r = tf::tfDistance(current_position, reference_position);
+    target_pose.pose.position.y = r * cos(value_adjust[3]);
+    target_pose.pose.position.z = -r * sin(value_adjust[3]);
+    target_pose.pose.orientation = tf::createQuaternionMsgFromRollPitchYaw(-value_adjust[3], 0, 0);
 
-  //   // 輸出target_pose
-  //   ROS_INFO("target_pose: \n(x, y, z): %.2f, %.2f, %.2f, \n(qx, qy, qz, qw): %.2f, %.2f, %.2f, %.2f)",
-  //            target_pose.pose.position.x,
-  //            target_pose.pose.position.y,
-  //            target_pose.pose.position.z,
-  //            target_pose.pose.orientation.x,
-  //            target_pose.pose.orientation.y,
-  //            target_pose.pose.orientation.z,
-  //            target_pose.pose.orientation.w);
+    // 輸出target_pose
+    ROS_INFO("target_pose \n(x, y, z): %.2f, %.2f, %.2f, \n(qx, qy, qz, qw): %.2f, %.2f, %.2f, %.2f)",
+             target_pose.pose.position.x,
+             target_pose.pose.position.y,
+             target_pose.pose.position.z,
+             target_pose.pose.orientation.x,
+             target_pose.pose.orientation.y,
+             target_pose.pose.orientation.z,
+             target_pose.pose.orientation.w);
 
-  //   // 将目标位置转换为机械臂的姿态
-  //   move_group.setPoseTarget(target_pose, end_effector_link);
+    // 将目标位置转换为机械臂的姿态
+    move_group.setPoseTarget(target_pose);
 
-  //   // 规划机械臂的运动路径
-  //   error_code = move_group.plan(my_plan);
-  //   if (error_code.val == moveit_msgs::MoveItErrorCodes::SUCCESS)
-  //   {
-  //     // 循環執行計劃
-  //     bool joints_reached_goal = false;
-  //     std::vector<double> current_joint_positions;
-  //     for (size_t i = 0; i < my_plan.trajectory_.joint_trajectory.points.size(); i++)
-  //     {
-  //       // 執行當前點
-  //       move_group.setJointValueTarget(my_plan.trajectory_.joint_trajectory.points[i].positions);
-  //       move_group.move();
+    // 规划机械臂的运动路径
+    moveit_msgs::MoveItErrorCodes error_code = move_group.plan(my_plan);
 
-  //       // 檢查力量是否超過閾值
-  //       ROS_INFO("feedback_controller.getForceValue().x: %.2f", feedback_controller.getForceValue().x);
-  //       if (feedback_controller.getForceValue().x > FORCE_X_THRESHOLD)
-  //       {
-  //         ROS_WARN("Force exceeds threshold, stopping execution");
-  //         break;
-  //       }
+    if (error_code.val == moveit_msgs::MoveItErrorCodes::SUCCESS)
+    {
+      // 循環執行运动路径計劃
+      bool joints_reached_goal = false;
+      std::vector<double> current_joint_positions;
+      for (size_t i = 0; i < my_plan.trajectory_.joint_trajectory.points.size(); i++)
+      {
+        // 執行當前點
+        move_group.setJointValueTarget(my_plan.trajectory_.joint_trajectory.points[i].positions);
+        move_group.move();
 
-  //       // 檢查是否到達目標位置
-  //       joints_reached_goal = false;
-  //       while (joints_reached_goal != true)
-  //       {
-  //         current_joint_positions = move_group.getCurrentJointValues();
+        // 檢查力量是否超過閾值
+        ROS_INFO("feedback_controller.getForceValue().x: %.2f", feedback_controller.getForceValue().x);
+        if (feedback_controller.getForceValue().x > FORCE_X_THRESHOLD)
+        {
+          ROS_WARN("Force exceeds threshold, stopping execution");
+          break;
+        }
 
-  //         for (size_t j = 0; j < my_plan.trajectory_.joint_trajectory.points[i].positions.size(); ++j)
-  //         {
-  //           if (std::abs(abs(current_joint_positions[j] - my_plan.trajectory_.joint_trajectory.points[i].positions[j])) > 0.01) // 0.01为容差值
-  //           {
-  //             joints_reached_goal = false;
-  //             break;
-  //           }
-  //           else
-  //           {
-  //             joints_reached_goal = true;
-  //           }
-  //         }
-  //       }
-  //       std::cout << "joints_reached_goal" << std::endl;
-  //     }
+        // 檢查是否到達目標位置
+        joints_reached_goal = false;
+        while (joints_reached_goal != true)
+        {
+          current_joint_positions = move_group.getCurrentJointValues();
 
-  //     ROS_INFO("Motion execution complete.");
-  //   }
-  //   else
-  //   {
-  //     // ROS_ERROR("Failed to plan and execute motion");
-  //     ROS_ERROR("Failed to plan: %d", error_code.val);
-  //   }
-  // }
+          for (size_t j = 0; j < my_plan.trajectory_.joint_trajectory.points[i].positions.size(); ++j)
+          {
+            if (std::abs(abs(current_joint_positions[j] - my_plan.trajectory_.joint_trajectory.points[i].positions[j])) > 0.01) // 0.01为容差值
+            {
+              joints_reached_goal = false;
+              break;
+            }
+            else
+            {
+              joints_reached_goal = true;
+            }
+          }
+        }
+        std::cout << "joints_reached_goal" << std::endl;
+      }
+
+      ROS_INFO("Motion execution complete.");
+    }
+    else
+    {
+      ROS_ERROR("Failed to plan: %d", error_code.val);
+    }
+  }
 }

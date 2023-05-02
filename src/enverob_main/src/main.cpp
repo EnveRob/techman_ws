@@ -36,7 +36,7 @@ int main(int argc, char **argv)
     moveit::planning_interface::MoveGroupInterface::Plan my_plan;
 
     // ------------------------ 手臂往距離信箱40公分處移動 ------------------------
-    // 將機械手臂移動到初始位置
+    // 將機械手臂移動到初始位置，target_joint[0]的最小值是-M_PI*1.5
     // std::vector<double> target_joint{-M_PI, -M_PI / 3, M_PI / 3 * 2, -M_PI / 3, M_PI / 2, -M_PI / 2};
     ROS_INFO("Move to initial position");
     std::vector<double> target_joint{-M_PI * 0.75, -M_PI / 3, M_PI / 3 * 2, -M_PI / 3, M_PI / 2, -M_PI / 2};
@@ -75,18 +75,8 @@ int main(int argc, char **argv)
     }
 
     // ------------------------ 手臂再次往距離信箱40公分處移動 ------------------------
-    while (nh.ok())
-    {
-        if (listener_check.waitForTransform("base", "mailbox_40cm_rear", ros::Time(0), ros::Duration(3)))
-        {
-            listener_check.lookupTransform("base", "mailbox_40cm_rear", ros::Time(0), targetTransform);
-            ROS_INFO("targetTransform \n(x, y, z): %.2f, %.2f, %.2f, \n(qx, qy, qz, qw): %.2f, %.2f, %.2f, %.2f",
-                     targetTransform.getOrigin().x(), targetTransform.getOrigin().y(), targetTransform.getOrigin().z(),
-                     targetTransform.getRotation().x(), targetTransform.getRotation().y(), targetTransform.getRotation().z(), targetTransform.getRotation().w());
-            find_mailbox = 1;
-            break;
-        }
-    }
+    new_frame::waitforTransform("mailbox_40cm_rear", targetTransform);
+    find_mailbox = 1;
 
     if (find_mailbox)
     {
@@ -102,19 +92,8 @@ int main(int argc, char **argv)
     // ------------------------ 手臂向上至正對信箱口 ------------------------
     std::vector<double> mailbox_opening_40cm_rear_position;
     new_frame::fixedFrame_add(mailbox_opening_40cm_rear_position, "camera", "mailbox_opening_40cm_rear");
-
-    while (nh.ok())
-    {
-        if (listener.waitForTransform("base", "mailbox_opening_40cm_rear", ros::Time(0), ros::Duration(3)))
-        {
-            listener.lookupTransform("base", "mailbox_opening_40cm_rear", ros::Time(0), targetTransform);
-            ROS_INFO("targetTransform \n(x, y, z): %.2f, %.2f, %.2f, \n(qx, qy, qz, qw): %.2f, %.2f, %.2f, %.2f",
-                     targetTransform.getOrigin().x(), targetTransform.getOrigin().y(), targetTransform.getOrigin().z(),
-                     targetTransform.getRotation().x(), targetTransform.getRotation().y(), targetTransform.getRotation().z(), targetTransform.getRotation().w());
-            find_mailbox = 1;
-            break;
-        }
-    }
+    new_frame::waitforTransform("mailbox_opening_40cm_rear", targetTransform);
+    find_mailbox = 1;
 
     arm_move::setTargetPosition(move_group, my_plan, targetTransform);
 
