@@ -92,25 +92,21 @@ namespace arm_move
       std::string reference_frame,
       std::vector<double> value_adjust // x, y, z, theta
   )
-  {
-    tf::StampedTransform reference_transform;
-    new_frame::waitforTransform(reference_frame, reference_transform);
+  { // 获取机械臂的当前姿态
+    moveit::core::RobotStatePtr current_state = move_group.getCurrentState();
+    std::vector<double> joint_group_positions;
+    current_state->copyJointGroupPositions(
+        move_group.getCurrentState()->getRobotModel()->getJointModelGroup(move_group.getName()),
+        joint_group_positions);
 
-    // 計算target_pose
-    geometry_msgs::PoseStamped current_pose = move_group.getCurrentPose();
+    // 创建要移动到的目标位置
     geometry_msgs::PoseStamped target_pose;
     target_pose.header.frame_id = reference_frame;
 
-    tf::Vector3 reference_position = reference_transform.getOrigin();
-    tf::Vector3 current_position;
-    current_position.setX(current_pose.pose.position.x);
-    current_position.setY(current_pose.pose.position.y);
-    current_position.setZ(current_pose.pose.position.z);
-
-    double r = tf::tfDistance(current_position, reference_position);
-    target_pose.pose.position.y = r * cos(value_adjust[3]);
-    target_pose.pose.position.z = -r * sin(value_adjust[3]);
-    target_pose.pose.orientation = tf::createQuaternionMsgFromRollPitchYaw(-value_adjust[3], 0, 0);
+    target_pose.pose.position.x = value_adjust[0];
+    target_pose.pose.position.y = value_adjust[1];
+    target_pose.pose.position.z = value_adjust[2];
+    target_pose.pose.orientation = tf::createQuaternionMsgFromRollPitchYaw(value_adjust[3], 0, 0);
 
     // 輸出target_pose
     ROS_INFO("target_pose \n(x, y, z): %.2f, %.2f, %.2f, \n(qx, qy, qz, qw): %.2f, %.2f, %.2f, %.2f)",
@@ -147,24 +143,21 @@ namespace arm_move
       std::vector<double> value_adjust, // x, y, z, theta
       force_feedback::ForceCallback feedback_controller)
   {
-    tf::StampedTransform reference_transform;
-    new_frame::waitforTransform(reference_frame, reference_transform);
+    // 获取机械臂的当前姿态
+    moveit::core::RobotStatePtr current_state = move_group.getCurrentState();
+    std::vector<double> joint_group_positions;
+    current_state->copyJointGroupPositions(
+        move_group.getCurrentState()->getRobotModel()->getJointModelGroup(move_group.getName()),
+        joint_group_positions);
 
-    // 計算target_pose
-    geometry_msgs::PoseStamped current_pose = move_group.getCurrentPose();
+    // 创建要移动到的目标位置
     geometry_msgs::PoseStamped target_pose;
     target_pose.header.frame_id = reference_frame;
 
-    tf::Vector3 reference_position = reference_transform.getOrigin();
-    tf::Vector3 current_position;
-    current_position.setX(current_pose.pose.position.x);
-    current_position.setY(current_pose.pose.position.y);
-    current_position.setZ(current_pose.pose.position.z);
-
-    double r = tf::tfDistance(current_position, reference_position);
-    target_pose.pose.position.y = r * cos(value_adjust[3]);
-    target_pose.pose.position.z = -r * sin(value_adjust[3]);
-    target_pose.pose.orientation = tf::createQuaternionMsgFromRollPitchYaw(-value_adjust[3], 0, 0);
+    target_pose.pose.position.x = value_adjust[0];
+    target_pose.pose.position.y = value_adjust[1];
+    target_pose.pose.position.z = value_adjust[2];
+    target_pose.pose.orientation = tf::createQuaternionMsgFromRollPitchYaw(value_adjust[3], 0, 0);
 
     // 輸出target_pose
     ROS_INFO("target_pose \n(x, y, z): %.2f, %.2f, %.2f, \n(qx, qy, qz, qw): %.2f, %.2f, %.2f, %.2f)",

@@ -3,7 +3,6 @@
 #define FORCE_X_THRESHOLD 300.0
 
 #include <ros/ros.h>
-#include <std_msgs/UInt8.h>
 #include <geometry_msgs/Vector3.h>
 
 namespace force_feedback
@@ -13,12 +12,10 @@ namespace force_feedback
     public:
         ros::NodeHandle nh_;
         ros::Subscriber sub_;
-        ros::Publisher pub_;
 
         ForceCallback() : nh_("~") // constructor
         {
             sub_ = nh_.subscribe("/force_data", 1000, &ForceCallback::forceCallback, this);
-            pub_ = nh_.advertise<std_msgs::UInt8>("gripper_cmd", 1000);
             ROS_INFO_STREAM("Subscriber in class initialized: " << sub_.getTopic());
         }
         /*ForceCallback() 是构造函数的名称， nh_("~") 是成员变量 nh_ 的初始化列表， ~表示节点的私有命名空间。

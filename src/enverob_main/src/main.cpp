@@ -4,6 +4,7 @@
 #include "new_frame.h"
 #include "force_feedback.h"
 #include "std_msgs/String.h"
+#include <std_msgs/UInt8.h>
 #include <tf/transform_listener.h>
 
 bool find_mailbox = 1;
@@ -20,6 +21,7 @@ int main(int argc, char **argv)
 
     // 創建一個Subscriber，訂閱camera_data
     ros::Subscriber sub = nh.subscribe("camera_data", 10, &cameraCallback);
+    ros::Publisher pub = nh.advertise<std_msgs::UInt8>("gripper_cmd", 1000);
     force_feedback::ForceCallback forceSubsriber;
 
     // 创建一个监听器，监听所有tf变换，缓冲10s
@@ -50,7 +52,7 @@ int main(int argc, char **argv)
     {
         target_joint[0] = current_direction;
         arm_move::setJointangle(move_group, my_plan, target_joint);
-        if (listener.waitForTransform("base", "mailbox_40cm_rear", ros::Time(0), ros::Duration(3)))
+        if (listener.waitForTransform("base", "mailbox_40cm_rear", ros::Time(0), ros::Duration(0.5)))
         {
             listener.lookupTransform("base", "mailbox_40cm_rear", ros::Time(0), targetTransform);
             ROS_INFO("targetTransform \n(x, y, z): %.2f, %.2f, %.2f, \n(qx, qy, qz, qw): %.2f, %.2f, %.2f, %.2f",
@@ -65,8 +67,9 @@ int main(int argc, char **argv)
 
     if (find_mailbox)
     {
-        arm_move::setTargetPosition(move_group, my_plan, targetTransform);
+
         find_mailbox = 0;
+        arm_move::setTargetPosition(move_group, my_plan, targetTransform);
     }
     else
     {
@@ -80,8 +83,8 @@ int main(int argc, char **argv)
 
     if (find_mailbox)
     {
-        arm_move::setTargetPosition(move_group, my_plan, targetTransform);
         find_mailbox = 0;
+        arm_move::setTargetPosition(move_group, my_plan, targetTransform);
     }
     else
     {
@@ -90,18 +93,64 @@ int main(int argc, char **argv)
     }
 
     // ------------------------ 手臂向上至正對信箱口 ------------------------
-    std::vector<double> mailbox_opening_40cm_rear_position;
-    new_frame::fixedFrame_add(mailbox_opening_40cm_rear_position, "camera", "mailbox_opening_40cm_rear");
+    std::vector<double> mailbox_opening_40cm_rear_position = {0.0, 0.0, -0.2, 0.0, 0.0, 0.0, 1.0};
+    new_frame::fixedFrame_add(mailbox_opening_40cm_rear_position, "mailbox_40cm_rear", "mailbox_opening_40cm_rear");
     new_frame::waitforTransform("mailbox_opening_40cm_rear", targetTransform);
     find_mailbox = 1;
 
     arm_move::setTargetPosition(move_group, my_plan, targetTransform);
 
-    // // ------------------------ 手臂往信箱口移動，嘗試讓信接觸到信箱 ------------------------
-    // std::vector<double> back_of_mailbox_transform;
-    // new_frame::fixedFrame_add(back_of_mailbox_transform, "camera", "back_of_mailbox");
+    std::vector<double> mailbox_opening_position = {0.0, -0.4, 0.0, 0.0, 0.0, 0.0, 1.0};
+    new_frame::fixedFrame_add(mailbox_opening_position, "mailbox_opening_40cm_rear", "mailbox_opening");
 
-    // // ------------------------ 手臂往後移動10cm ------------------------
+    // ------------------------ 手臂往信箱口移動，嘗試讓信接觸到信箱 ------------------------
+    std::vector<double> movement = {0.0, -0.45, 0.0, 0.0}; // x, y, z, theta
+    arm_move::setRelativePosition(move_group, my_plan, "mailbox_opening_40cm_rear", movement, forceSubsriber);
+
+    // ------------------------ 手臂讓信接觸到信箱後建立新的"mail_touch_mailbox_back"座標系 ------------------------
+    std::vector<double> mail_touch_mailbox_back_position = {0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 1.0};
+    new_frame::fixedFrame_add(mail_touch_mailbox_back_position, "gripper_link", "mail_touch_mailbox_back");
+    new_frame::waitforTransform("mail_touch_mailbox_back", targetTransform);
+
+    // ------------------------ 手臂從"mail_touch_mailbox_back"（接觸到信箱後停下的位置）往後移動5cm ------------------------
+    movement = {0.0, 0.05, 0.0, 0.0}; // x, y, z, theta
+    arm_move::setRelativePosition(move_group, my_plan, "mail_touch_mailbox_back", movement);
+
+    // ------------------------ 手臂以信箱口中心為旋轉軸，向上旋轉10度 ------------------------
+    geometry_msgs::PoseStamped current_pose = move_group.getCurrentPose();
+    tf::Vector3 current_position;
+    current_position.setX(current_pose.pose.position.x);
+    current_position.setY(current_pose.pose.position.y);
+    current_position.setZ(current_pose.pose.position.z);
+
+    tf::StampedTransform mailbox_opening_transform;
+    new_frame::waitforTransform("mailbox_opening", mailbox_opening_transform);
+    tf::Vector3 reference_position = mailbox_opening_transform.getOrigin();
+
+    double r = tf::tfDistance(current_position, reference_position);
+    double theta = M_PI / 18;
+
+    movement = {0.0, r * cos(theta), -r * sin(theta), 0.0}; // x, y, z, theta
+    arm_move::setRelativePosition(move_group, my_plan, "mailbox_opening", movement);
+
+    movement = {0.0, r * cos(theta), -r * sin(theta), -theta}; // x, y, z, theta
+    arm_move::setRelativePosition(move_group, my_plan, "mailbox_opening", movement);
+
+    movement = {0.0, 0.00, 0.0, -theta}; // x, y, z, theta
+    arm_move::setRelativePosition(move_group, my_plan, "mailbox_opening", movement, forceSubsriber);
+
+    // ------------------------ 夾爪鬆開投入信件 ------------------------
+    std_msgs::UInt8 gripper_msg;
+    gripper_msg.data = 2;
+    pub.publish(gripper_msg);
+    ROS_INFO("Gripper open");
+
+    // ------------------------ 手臂歸位 ------------------------
+    new_frame::waitforTransform("mailbox_opening_40cm_rear", targetTransform);
+    arm_move::setTargetPosition(move_group, my_plan, targetTransform);
+    ROS_INFO("Move to initial position");
+    target_joint = {-M_PI * 0.75, -M_PI / 3, M_PI / 3 * 2, -M_PI / 3, M_PI / 2, -M_PI / 2};
+    arm_move::setJointangle(move_group, my_plan, target_joint);
 
     return 0;
 }

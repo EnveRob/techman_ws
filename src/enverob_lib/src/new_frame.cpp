@@ -5,7 +5,7 @@
 
 namespace new_frame
 {
-  void waitforTransform(std::string target_frame, tf::StampedTransform target_transform)
+  void waitforTransform(std::string target_frame, tf::StampedTransform &target_transform)
   {
     tf::TransformListener listener;
     while (ros::ok())
