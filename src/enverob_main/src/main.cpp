@@ -145,14 +145,23 @@ void cameraCallback(const std_msgs::String::ConstPtr &msg)
             v.push_back(std::stod(token));
         }
 
-        ROS_INFO("Mailbox position relative to camera \n(x, y, z): %.2f, %.2f, %.2f, \n(Rx, Ry, Rz): %.2f, %.2f, %.2f",
+        ROS_INFO("Mailbox position related to camera \n(x, y, z): %.2f, %.2f, %.2f, \n(Rx, Ry, Rz): %.2f, %.2f, %.2f",
                  v[0], v[1], v[2],
                  v[3], v[4], v[5]);
-
-        // ------------------------ 將座標改為z軸向上 ------------------------
         std::vector<double> mailbox_40cm_rear_transform{v[0], v[1], v[2]};
         tf::Quaternion q;
         q.setRPY(v[3], v[4], v[5]); // 以弧度為單位
+
+        mailbox_40cm_rear_transform.push_back(q.x());
+        mailbox_40cm_rear_transform.push_back(q.y());
+        mailbox_40cm_rear_transform.push_back(q.z());
+        mailbox_40cm_rear_transform.push_back(q.w());
+
+        // ------------------------ 將座標改為z軸向上 ------------------------
+        q.setX(mail2camera.transform.rotation.x);
+        q.setY(mail2camera.transform.rotation.y);
+        q.setZ(mail2camera.transform.rotation.z);
+        q.setW(mail2camera.transform.rotation.w);
 
         // 定義旋轉軸和旋轉角度
         tf::Vector3 axis(1, 0, 0);
@@ -165,10 +174,10 @@ void cameraCallback(const std_msgs::String::ConstPtr &msg)
         q *= rotation;
         q.normalize();
 
-        mailbox_40cm_rear_transform.push_back(q.x());
-        mailbox_40cm_rear_transform.push_back(q.y());
-        mailbox_40cm_rear_transform.push_back(q.z());
-        mailbox_40cm_rear_transform.push_back(q.w());
+        mailbox_40cm_rear_transform[3] = q.x();
+        mailbox_40cm_rear_transform[4] = q.y();
+        mailbox_40cm_rear_transform[5] = q.z();
+        mailbox_40cm_rear_transform[6] = q.w();
 
         // ------------------------ 將座標平移至信箱40公分處座標 ------------------------
         mailbox_40cm_rear_transform[1] += 0.4;
