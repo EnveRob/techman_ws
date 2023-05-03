@@ -6,6 +6,7 @@
 namespace arm_move
 {
   void setJointangle(
+      ros::NodeHandle nh,
       moveit::planning_interface::MoveGroupInterface &move_group,
       moveit::planning_interface::MoveGroupInterface::Plan &my_plan,
       std::vector<double> joint_group_positions // joint1~6分别代表六个关节的角度,单位为弧度
@@ -18,7 +19,7 @@ namespace arm_move
     // 等待機械手臂到達目標位置
     bool joints_reached_goal = false;
     std::vector<double> current_joint_positions;
-    while (joints_reached_goal != 1)
+    while (nh.ok() && joints_reached_goal != 1)
     {
       current_joint_positions = move_group.getCurrentJointValues();
       for (size_t i = 0; i < joint_group_positions.size(); ++i)
@@ -38,6 +39,7 @@ namespace arm_move
   }
 
   void setTargetPosition(
+      ros::NodeHandle nh,
       moveit::planning_interface::MoveGroupInterface &move_group,
       moveit::planning_interface::MoveGroupInterface::Plan &my_plan,
       tf::StampedTransform target)
@@ -73,11 +75,37 @@ namespace arm_move
       ROS_INFO("Set Target Position");
 
       // 等待機械手臂到達目標位置
-      geometry_msgs::PoseStamped current_pose = move_group.getCurrentPose();
-      while (current_pose.pose != target_pose)
+      bool reached_goal = false;
+      double error = 0.05;
+      geometry_msgs::PoseStamped current_pose;
+
+      while (nh.ok() && reached_goal != 1)
       {
         current_pose = move_group.getCurrentPose();
+        if (std::abs(current_pose.pose.position.x - target_pose.position.x) <= error &&
+            std::abs(current_pose.pose.position.y - target_pose.position.y) <= error &&
+            std::abs(current_pose.pose.position.z - target_pose.position.z) <= error &&
+            std::abs(current_pose.pose.orientation.x - target_pose.orientation.x) <= error &&
+            std::abs(current_pose.pose.orientation.y - target_pose.orientation.y) <= error &&
+            std::abs(current_pose.pose.orientation.z - target_pose.orientation.z) <= error &&
+            std::abs(current_pose.pose.orientation.w - target_pose.orientation.w) <= error)
+        {
+          reached_goal = true;
+        }
+        else
+        {
+          ROS_INFO("current_error \n(x, y, z): %.2f, %.2f, %.2f, \n(qx, qy, qz, qw): %.2f, %.2f, %.2f, %.2f",
+                   std::abs(current_pose.pose.position.x - target_pose.position.x),
+                   std::abs(current_pose.pose.position.y - target_pose.position.y),
+                   std::abs(current_pose.pose.position.z - target_pose.position.z),
+                   std::abs(current_pose.pose.orientation.x - target_pose.orientation.x),
+                   std::abs(current_pose.pose.orientation.y - target_pose.orientation.y),
+                   std::abs(current_pose.pose.orientation.z - target_pose.orientation.z),
+                   std::abs(current_pose.pose.orientation.w - target_pose.orientation.w));
+          reached_goal = false;
+        }
       }
+
       ROS_INFO("Target Position Reached");
     }
     else
@@ -87,6 +115,7 @@ namespace arm_move
   }
 
   void setRelativePosition(
+      ros::NodeHandle nh,
       moveit::planning_interface::MoveGroupInterface &move_group,
       moveit::planning_interface::MoveGroupInterface::Plan &my_plan,
       std::string reference_frame,
@@ -137,6 +166,7 @@ namespace arm_move
   }
 
   void setRelativePosition(
+      ros::NodeHandle nh,
       moveit::planning_interface::MoveGroupInterface &move_group,
       moveit::planning_interface::MoveGroupInterface::Plan &my_plan,
       std::string reference_frame,
@@ -196,7 +226,7 @@ namespace arm_move
 
         // 檢查是否到達目標位置
         joints_reached_goal = false;
-        while (joints_reached_goal != true)
+        while (nh.ok() && joints_reached_goal != true)
         {
           current_joint_positions = move_group.getCurrentJointValues();
 

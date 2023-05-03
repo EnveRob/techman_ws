@@ -42,7 +42,7 @@ int main(int argc, char **argv)
     // std::vector<double> target_joint{-M_PI, -M_PI / 3, M_PI / 3 * 2, -M_PI / 3, M_PI / 2, -M_PI / 2};
     ROS_INFO("Move to initial position");
     std::vector<double> target_joint{-M_PI * 0.75, -M_PI / 3, M_PI / 3 * 2, -M_PI / 3, M_PI / 2, -M_PI / 2};
-    arm_move::setJointangle(move_group, my_plan, target_joint);
+    arm_move::setJointangle(nh, move_group, my_plan, target_joint);
 
     // 旋轉機械手臂，尋找信箱
     find_mailbox = 0;
@@ -52,7 +52,7 @@ int main(int argc, char **argv)
     while (nh.ok() && current_direction >= -M_PI * 1.25)
     {
         target_joint[0] = current_direction;
-        arm_move::setJointangle(move_group, my_plan, target_joint);
+        arm_move::setJointangle(nh, move_group, my_plan, target_joint);
         if (listener.waitForTransform("base", "mailbox_30cm_rear", ros::Time(0), ros::Duration(0.5)))
         {
             listener.lookupTransform("base", "mailbox_30cm_rear", ros::Time(0), targetTransform);
@@ -70,7 +70,7 @@ int main(int argc, char **argv)
     {
         ROS_INFO("Move to 30cm rear of mailbox");
         find_mailbox = 0;
-        arm_move::setTargetPosition(move_group, my_plan, targetTransform);
+        arm_move::setTargetPosition(nh, move_group, my_plan, targetTransform);
     }
     else
     {
@@ -90,7 +90,7 @@ int main(int argc, char **argv)
     if (find_mailbox)
     {
         find_mailbox = 0;
-        arm_move::setTargetPosition(move_group, my_plan, targetTransform);
+        arm_move::setTargetPosition(nh, move_group, my_plan, targetTransform);
     }
     else
     {
@@ -110,7 +110,7 @@ int main(int argc, char **argv)
     new_frame::waitforTransform("mailbox_opening_30cm_rear", targetTransform);
     find_mailbox = 1;
 
-    arm_move::setTargetPosition(move_group, my_plan, targetTransform);
+    arm_move::setTargetPosition(nh, move_group, my_plan, targetTransform);
 
     std::vector<double> mailbox_opening_position = {0.0, -0.3, 0.0, 0.0, 0.0, 0.0, 1.0};
     new_frame::fixedFrame_add(mailbox_opening_position, "mailbox_opening_30cm_rear", "mailbox_opening");
@@ -119,10 +119,11 @@ int main(int argc, char **argv)
     std::cout << "Press any key to continue..." << std::endl;
     std::cin.ignore();
 
+    // ------------------------ <TOCHECK> ------------------------
     // ------------------------ 手臂往信箱口移動，嘗試讓信接觸到信箱 ------------------------
     ROS_INFO("Move to mailbox opening");
     std::vector<double> movement = {0.0, -0.35, 0.0, 0.0}; // x, y, z, theta
-    arm_move::setRelativePosition(move_group, my_plan, "mailbox_opening_30cm_rear", movement, forceSubsriber);
+    arm_move::setRelativePosition(nh, move_group, my_plan, "mailbox_opening_30cm_rear", movement, forceSubsriber);
 
     // 輸入任意鍵以繼續
     std::cout << "Press any key to continue..." << std::endl;
@@ -141,7 +142,7 @@ int main(int argc, char **argv)
     // ------------------------ 手臂從"mail_touch_mailbox_back"（接觸到信箱後停下的位置）往後移動5cm ------------------------
     ROS_INFO("Move back 5cm");
     movement = {0.0, 0.05, 0.0, 0.0}; // x, y, z, theta
-    arm_move::setRelativePosition(move_group, my_plan, "mail_touch_mailbox_back", movement);
+    arm_move::setRelativePosition(nh, move_group, my_plan, "mail_touch_mailbox_back", movement);
 
     // 輸入任意鍵以繼續
     std::cout << "Press any key to continue..." << std::endl;
@@ -163,14 +164,14 @@ int main(int argc, char **argv)
     double theta = M_PI / 18;
 
     movement = {0.0, r * cos(theta), -r * sin(theta), 0.0}; // x, y, z, theta
-    arm_move::setRelativePosition(move_group, my_plan, "mailbox_opening", movement);
+    arm_move::setRelativePosition(nh, move_group, my_plan, "mailbox_opening", movement);
 
     movement = {0.0, r * cos(theta), -r * sin(theta), -theta}; // x, y, z, theta
-    arm_move::setRelativePosition(move_group, my_plan, "mailbox_opening", movement);
+    arm_move::setRelativePosition(nh, move_group, my_plan, "mailbox_opening", movement);
 
     ROS_INFO("Move directly to mailbox opening");
     movement = {0.0, 0.00, 0.0, -theta}; // x, y, z, theta
-    arm_move::setRelativePosition(move_group, my_plan, "mailbox_opening", movement, forceSubsriber);
+    arm_move::setRelativePosition(nh, move_group, my_plan, "mailbox_opening", movement, forceSubsriber);
 
     // 輸入任意鍵以繼續
     std::cout << "Press any key to continue..." << std::endl;
@@ -190,10 +191,10 @@ int main(int argc, char **argv)
     // ------------------------ 手臂歸位 ------------------------
     ROS_INFO("Move to initial position");
     new_frame::waitforTransform("mailbox_opening_30cm_rear", targetTransform);
-    arm_move::setTargetPosition(move_group, my_plan, targetTransform);
+    arm_move::setTargetPosition(nh, move_group, my_plan, targetTransform);
     ROS_INFO("Move to initial position");
     target_joint = {-M_PI * 0.75, -M_PI / 3, M_PI / 3 * 2, -M_PI / 3, M_PI / 2, -M_PI / 2};
-    arm_move::setJointangle(move_group, my_plan, target_joint);
+    arm_move::setJointangle(nh, move_group, my_plan, target_joint);
 
     std::cout << "code end" << std::endl;
 
