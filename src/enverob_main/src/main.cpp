@@ -8,6 +8,7 @@
 #include <tf/transform_listener.h>
 
 bool find_mailbox = 1;
+int searching_state = 1;
 
 void cameraCallback(const std_msgs::String::ConstPtr &msg);
 
@@ -85,6 +86,7 @@ int main(int argc, char **argv)
     // ------------------------ 手臂再次往距離信箱30公分處移動 ------------------------
     ROS_INFO("Move to 30cm rear of mailbox again");
     new_frame::waitforTransform("mailbox_30cm_rear", targetTransform);
+    searching_state = 2;
     find_mailbox = 1;
 
     if (find_mailbox)
@@ -224,7 +226,14 @@ void cameraCallback(const std_msgs::String::ConstPtr &msg)
                  v[3], v[4], v[5]);
         std::vector<double> mailbox_30cm_rear_transform{v[0], v[1], v[2]};
         tf::Quaternion q;
-        q.setRPY(v[3], v[4], v[5]); // 以弧度為單位
+        if (searching_state == 1)
+        {
+            q.setRPY(0, 0, 0); // 以弧度為單位
+        }
+        else
+        {
+            q.setRPY(v[3], v[4], v[5]); // 以弧度為單位
+        }
 
         mailbox_30cm_rear_transform.push_back(q.x());
         mailbox_30cm_rear_transform.push_back(q.y());
