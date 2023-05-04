@@ -84,11 +84,11 @@ namespace arm_move
         current_pose = move_group.getCurrentPose();
         if (std::abs(current_pose.pose.position.x - target_pose.position.x) <= error &&
             std::abs(current_pose.pose.position.y - target_pose.position.y) <= error &&
-            std::abs(current_pose.pose.position.z - target_pose.position.z) <= error &&
-            std::abs(current_pose.pose.orientation.x - target_pose.orientation.x) <= error &&
-            std::abs(current_pose.pose.orientation.y - target_pose.orientation.y) <= error &&
-            std::abs(current_pose.pose.orientation.z - target_pose.orientation.z) <= error &&
-            std::abs(current_pose.pose.orientation.w - target_pose.orientation.w) <= error)
+            std::abs(current_pose.pose.position.z - target_pose.position.z) <= error)
+        // std::abs(current_pose.pose.orientation.x - target_pose.orientation.x) <= error &&
+        // std::abs(current_pose.pose.orientation.y - target_pose.orientation.y) <= error &&
+        // std::abs(current_pose.pose.orientation.z - target_pose.orientation.z) <= error &&
+        // std::abs(current_pose.pose.orientation.w - target_pose.orientation.w) <= error)
         {
           reached_goal = true;
         }
