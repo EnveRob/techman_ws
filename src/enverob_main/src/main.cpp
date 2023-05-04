@@ -41,16 +41,16 @@ int main(int argc, char **argv)
     // ------------------------ 手臂往距離信箱30公分處移動 ------------------------
     ROS_INFO("Move to initial position");
     // 將機械手臂移動到初始位置，target_joint[0]的最小值是-M_PI*1.5
-    std::vector<double> target_joint{-M_PI, -M_PI / 3, M_PI / 3 * 2, -M_PI / 3, M_PI / 2, -M_PI / 2};
-    // std::vector<double> target_joint{-M_PI * 0.75, -M_PI / 3, M_PI / 3 * 2, -M_PI / 3, M_PI / 2, -M_PI / 2};
+    // std::vector<double> target_joint{-M_PI, -M_PI / 3, M_PI / 3 * 2, -M_PI / 3, M_PI / 2, -M_PI / 2};
+    std::vector<double> target_joint{-M_PI * 0.75, -M_PI / 3, M_PI / 3 * 2, -M_PI / 3, M_PI / 2, -M_PI / 2};
     arm_move::setJointangle(nh, move_group, my_plan, target_joint);
 
     // 旋轉機械手臂，尋找信箱
     find_mailbox = 0;
-    double current_direction = target_joint[0] + ROTATION_STEP;
-    // double current_direction = target_joint[0] - ROTATION_STEP;
-    while (nh.ok() && current_direction <= 0)
-    // while (nh.ok() && current_direction >= -M_PI * 1.25)
+    // double current_direction = target_joint[0] + ROTATION_STEP;
+    double current_direction = target_joint[0] - ROTATION_STEP;
+    // while (nh.ok() && current_direction <= 0)
+    while (nh.ok() && current_direction >= -M_PI * 1.25)
     {
         target_joint[0] = current_direction;
         arm_move::setJointangle(nh, move_group, my_plan, target_joint);
@@ -63,8 +63,8 @@ int main(int argc, char **argv)
             find_mailbox = 1;
             break;
         }
-        current_direction += ROTATION_STEP;
-        // current_direction -= ROTATION_STEP;
+        // current_direction += ROTATION_STEP;
+        current_direction -= ROTATION_STEP;
     }
 
     if (find_mailbox)
