@@ -203,6 +203,7 @@ namespace arm_move
     move_group.setPoseTarget(target_pose);
 
     // 规划机械臂的运动路径
+    move_group.setMaxVelocityScalingFactor(0.5); // Set the maximum velocity scaling factor
     moveit_msgs::MoveItErrorCodes error_code = move_group.plan(my_plan);
 
     if (error_code.val == moveit_msgs::MoveItErrorCodes::SUCCESS)

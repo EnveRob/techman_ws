@@ -38,6 +38,89 @@ int main(int argc, char **argv)
 
     moveit::planning_interface::MoveGroupInterface::Plan my_plan;
 
+    // // ------------------------ 手臂往距離信箱30公分處移動 ------------------------
+    // ROS_INFO("Move to initial position");
+    // // 將機械手臂移動到初始位置，target_joint[0]的最小值是-M_PI*1.5
+    // // std::vector<double> target_joint{-M_PI, -M_PI / 3, M_PI / 3 * 2, -M_PI / 3, M_PI / 2, -M_PI / 2};
+    // std::vector<double> target_joint{-M_PI * 0.75, -M_PI / 3, M_PI / 3 * 2, -M_PI / 3, M_PI / 2, -M_PI / 2};
+    // arm_move::setJointangle(nh, move_group, my_plan, target_joint);
+
+    // // 旋轉機械手臂，尋找信箱
+    // find_mailbox = 0;
+    // // double current_direction = target_joint[0] + ROTATION_STEP;
+    // double current_direction = target_joint[0] - ROTATION_STEP;
+    // // while (nh.ok() && current_direction <= 0)
+    // while (nh.ok() && current_direction >= -M_PI * 1.25)
+    // {
+    //     target_joint[0] = current_direction;
+    //     arm_move::setJointangle(nh, move_group, my_plan, target_joint);
+    //     if (listener.waitForTransform("base", "mailbox_offset", ros::Time(0), ros::Duration(0.5)))
+    //     {
+    //         listener.lookupTransform("base", "mailbox_offset", ros::Time(0), targetTransform);
+    //         ROS_INFO("targetTransform \n(x, y, z): %.2f, %.2f, %.2f, \n(qx, qy, qz, qw): %.2f, %.2f, %.2f, %.2f",
+    //                  targetTransform.getOrigin().x(), targetTransform.getOrigin().y(), targetTransform.getOrigin().z(),
+    //                  targetTransform.getRotation().x(), targetTransform.getRotation().y(), targetTransform.getRotation().z(), targetTransform.getRotation().w());
+    //         find_mailbox = 1;
+    //         break;
+    //     }
+    //     // current_direction += ROTATION_STEP;
+    //     current_direction -= ROTATION_STEP;
+    // }
+
+    // if (find_mailbox)
+    // {
+    //     ROS_INFO("Move to 30cm rear of mailbox");
+    //     find_mailbox = 0;
+    //     arm_move::setTargetPosition(nh, move_group, my_plan, targetTransform);
+    // }
+    // else
+    // {
+    //     ROS_ERROR("Can't find mailbox!");
+    //     return 0;
+    // }
+
+    // // 輸入任意鍵以繼續
+    // std::cout << "Press any key to continue..." << std::endl;
+    // std::cin.ignore();
+
+    // // ------------------------ 手臂再次往距離信箱30公分處移動 ------------------------
+    // ROS_INFO("Move to 30cm rear of mailbox again");
+    // new_frame::waitforTransform("mailbox_offset", targetTransform);
+    // searching_state = 2;
+    // find_mailbox = 1;
+
+    // if (find_mailbox)
+    // {
+    //     find_mailbox = 0;
+    //     arm_move::setTargetPosition(nh, move_group, my_plan, targetTransform);
+    // }
+    // else
+    // {
+    //     std::cout << "Can't find mailbox!" << std::endl;
+    //     return 0;
+    // }
+
+    // // 輸入任意鍵以繼續
+    // std::cout << "Press any key to continue..." << std::endl;
+    // std::cin.ignore();
+
+    // // ------------------------ 手臂向上至正對信箱口 ------------------------
+    // ROS_INFO("Move to 30cm rear of mailbox opening");
+    // std::vector<double>
+    //     mailbox_opening_offset_position = {0.0, 0.0, -0.2, 0.0, 0.0, 0.0, 1.0};
+    // new_frame::fixedFrame_add(mailbox_opening_offset_position, "mailbox_offset", "mailbox_opening_offset");
+    // new_frame::waitforTransform("mailbox_opening_offset", targetTransform);
+    // find_mailbox = 1;
+
+    // arm_move::setTargetPosition(nh, move_group, my_plan, targetTransform);
+
+    // std::vector<double> mailbox_opening_position = {0.0, -0.3, 0.0, 0.0, 0.0, 0.0, 1.0};
+    // new_frame::fixedFrame_add(mailbox_opening_position, "mailbox_opening_offset", "mailbox_opening");
+
+    // // 輸入任意鍵以繼續
+    // std::cout << "Press any key to continue..." << std::endl;
+    // std::cin.ignore();
+
     // ------------------------ 手臂往距離信箱30公分處移動 ------------------------
     ROS_INFO("Move to initial position");
     // 將機械手臂移動到初始位置，target_joint[0]的最小值是-M_PI*1.5
@@ -54,9 +137,9 @@ int main(int argc, char **argv)
     {
         target_joint[0] = current_direction;
         arm_move::setJointangle(nh, move_group, my_plan, target_joint);
-        if (listener.waitForTransform("base", "mailbox_30cm_rear", ros::Time(0), ros::Duration(0.5)))
+        if (listener.waitForTransform("base", "mailbox_opening_offset", ros::Time(0), ros::Duration(0.5)))
         {
-            listener.lookupTransform("base", "mailbox_30cm_rear", ros::Time(0), targetTransform);
+            listener.lookupTransform("base", "mailbox_opening_offset", ros::Time(0), targetTransform);
             ROS_INFO("targetTransform \n(x, y, z): %.2f, %.2f, %.2f, \n(qx, qy, qz, qw): %.2f, %.2f, %.2f, %.2f",
                      targetTransform.getOrigin().x(), targetTransform.getOrigin().y(), targetTransform.getOrigin().z(),
                      targetTransform.getRotation().x(), targetTransform.getRotation().y(), targetTransform.getRotation().z(), targetTransform.getRotation().w());
@@ -85,7 +168,7 @@ int main(int argc, char **argv)
 
     // ------------------------ 手臂再次往距離信箱30公分處移動 ------------------------
     ROS_INFO("Move to 30cm rear of mailbox again");
-    new_frame::waitforTransform("mailbox_30cm_rear", targetTransform);
+    new_frame::waitforTransform("mailbox_opening_offset", targetTransform);
     searching_state = 2;
     find_mailbox = 1;
 
@@ -103,29 +186,11 @@ int main(int argc, char **argv)
     // 輸入任意鍵以繼續
     std::cout << "Press any key to continue..." << std::endl;
     std::cin.ignore();
-
-    // ------------------------ 手臂向上至正對信箱口 ------------------------
-    ROS_INFO("Move to 30cm rear of mailbox opening");
-    std::vector<double>
-        mailbox_opening_30cm_rear_position = {0.0, 0.0, -0.2, 0.0, 0.0, 0.0, 1.0};
-    new_frame::fixedFrame_add(mailbox_opening_30cm_rear_position, "mailbox_30cm_rear", "mailbox_opening_30cm_rear");
-    new_frame::waitforTransform("mailbox_opening_30cm_rear", targetTransform);
-    find_mailbox = 1;
-
-    arm_move::setTargetPosition(nh, move_group, my_plan, targetTransform);
-
-    std::vector<double> mailbox_opening_position = {0.0, -0.3, 0.0, 0.0, 0.0, 0.0, 1.0};
-    new_frame::fixedFrame_add(mailbox_opening_position, "mailbox_opening_30cm_rear", "mailbox_opening");
-
-    // 輸入任意鍵以繼續
-    std::cout << "Press any key to continue..." << std::endl;
-    std::cin.ignore();
-
     // ------------------------ <TOCHECK> ------------------------
     // ------------------------ 手臂往信箱口移動，嘗試讓信接觸到信箱 ------------------------
     ROS_INFO("Move to mailbox opening");
     std::vector<double> movement = {0.0, -0.35, 0.0, 0.0}; // x, y, z, theta
-    arm_move::setRelativePosition(nh, move_group, my_plan, "mailbox_opening_30cm_rear", movement, forceSubsriber);
+    arm_move::setRelativePosition(nh, move_group, my_plan, "mailbox_opening_offset", movement, forceSubsriber);
 
     // 輸入任意鍵以繼續
     std::cout << "Press any key to continue..." << std::endl;
@@ -192,7 +257,7 @@ int main(int argc, char **argv)
 
     // ------------------------ 手臂歸位 ------------------------
     ROS_INFO("Move to initial position");
-    new_frame::waitforTransform("mailbox_opening_30cm_rear", targetTransform);
+    new_frame::waitforTransform("mailbox_opening_offset", targetTransform);
     arm_move::setTargetPosition(nh, move_group, my_plan, targetTransform);
     ROS_INFO("Move to initial position");
     target_joint = {-M_PI * 0.75, -M_PI / 3, M_PI / 3 * 2, -M_PI / 3, M_PI / 2, -M_PI / 2};
@@ -224,7 +289,7 @@ void cameraCallback(const std_msgs::String::ConstPtr &msg)
         ROS_INFO("Mailbox position related to camera \n(x, y, z): %.2f, %.2f, %.2f, \n(Rx, Ry, Rz): %.2f, %.2f, %.2f",
                  v[0], v[1], v[2],
                  v[3], v[4], v[5]);
-        std::vector<double> mailbox_30cm_rear_transform{v[0], v[1], v[2]};
+        std::vector<double> mailbox_offset_transform{v[0], v[1], v[2]};
         tf::Quaternion q;
         if (searching_state == 1)
         {
@@ -235,16 +300,16 @@ void cameraCallback(const std_msgs::String::ConstPtr &msg)
             q.setRPY(v[3], v[4], v[5]); // 以弧度為單位
         }
 
-        mailbox_30cm_rear_transform.push_back(q.x());
-        mailbox_30cm_rear_transform.push_back(q.y());
-        mailbox_30cm_rear_transform.push_back(q.z());
-        mailbox_30cm_rear_transform.push_back(q.w());
+        mailbox_offset_transform.push_back(q.x());
+        mailbox_offset_transform.push_back(q.y());
+        mailbox_offset_transform.push_back(q.z());
+        mailbox_offset_transform.push_back(q.w());
 
         // ------------------------ 將座標改為z軸向上 ------------------------
-        q.setX(mailbox_30cm_rear_transform[3]);
-        q.setY(mailbox_30cm_rear_transform[4]);
-        q.setZ(mailbox_30cm_rear_transform[5]);
-        q.setW(mailbox_30cm_rear_transform[6]);
+        q.setX(mailbox_offset_transform[3]);
+        q.setY(mailbox_offset_transform[4]);
+        q.setZ(mailbox_offset_transform[5]);
+        q.setW(mailbox_offset_transform[6]);
 
         // 定義旋轉軸和旋轉角度
         tf::Vector3 axis(1, 0, 0);
@@ -257,17 +322,18 @@ void cameraCallback(const std_msgs::String::ConstPtr &msg)
         q *= rotation;
         q.normalize();
 
-        mailbox_30cm_rear_transform[3] = q.x();
-        mailbox_30cm_rear_transform[4] = q.y();
-        mailbox_30cm_rear_transform[5] = q.z();
-        mailbox_30cm_rear_transform[6] = q.w();
+        mailbox_offset_transform[3] = q.x();
+        mailbox_offset_transform[4] = q.y();
+        mailbox_offset_transform[5] = q.z();
+        mailbox_offset_transform[6] = q.w();
 
         // ------------------------ 將座標平移至信箱30公分處座標 ------------------------
-        mailbox_30cm_rear_transform[2] -= 0.3;
-        mailbox_30cm_rear_transform[2] -= GRIPPER_OFFSET_D;
-        mailbox_30cm_rear_transform[1] += GRIPPER_OFFSET_H;
+        mailbox_offset_transform[2] -= 0.3;
+        mailbox_offset_transform[2] -= GRIPPER_OFFSET_D;
+        mailbox_offset_transform[1] += GRIPPER_OFFSET_H;
 
         // ------------------------ 發布信箱座標 ------------------------
-        new_frame::fixedFrame_add(mailbox_30cm_rear_transform, "camera", "mailbox_30cm_rear");
+        // new_frame::fixedFrame_add(mailbox_offset_transform, "camera", "mailbox_offset");
+        new_frame::fixedFrame_add(mailbox_offset_transform, "camera", "mailbox_opening_offset");
     }
 }
