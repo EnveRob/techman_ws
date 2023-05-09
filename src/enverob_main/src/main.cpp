@@ -144,7 +144,7 @@ int main(int argc, char **argv)
     // 將機械手臂移動到初始位置，target_joint[0]的最小值是-M_PI*1.5
     // std::vector<double> target_joint{-M_PI, -M_PI / 3, M_PI / 3 * 2, -M_PI / 3, M_PI / 2, -M_PI / 2};
     // std::vector<double> target_joint{-M_PI * 0.75, -M_PI / 3, M_PI / 3 * 2, -M_PI / 3, M_PI / 2, -M_PI / 2};
-    std::vector<double> target_joint{-M_PI / 180 * 135, -M_PI / 180 * 30, M_PI / 180 * 150, -M_PI / 180 * 135, M_PI / 2, -M_PI / 2};
+    std::vector<double> target_joint{-M_PI / 180 * 135, -M_PI / 180 * 30, M_PI / 180 * 150, -M_PI / 180 * 120, M_PI / 2, -M_PI / 2};
     arm_move::setJointangle(nh, move_group, my_plan, target_joint);
 
     // 旋轉機械手臂，尋找信箱
@@ -341,7 +341,7 @@ void cameraCallback(const std_msgs::String::ConstPtr &msg)
         tf::Quaternion q;
         if (searching_state == 1)
         {
-            q.setRPY(-M_PI / 180 * 15, 0, 0); // 以弧度為單位
+            q.setRPY(0, 0, 0); // 以弧度為單位
         }
         else
         {
@@ -361,7 +361,7 @@ void cameraCallback(const std_msgs::String::ConstPtr &msg)
 
         // 定義旋轉軸和旋轉角度
         tf::Vector3 axis(1, 0, 0);
-        double angle = -M_PI / 180 * 90;
+        double angle = -M_PI / 2;
 
         // 將旋轉軸和旋轉角度轉換為四元數
         tf::Quaternion rotation;
