@@ -266,6 +266,7 @@ void cameraCallback(const std_msgs::String::ConstPtr &msg)
             // q.setRPY(0, 0, 0); // 以弧度為單位
             q.setRPY(0, v[4], 0); // 以弧度為單位
             mailbox_offset_transform[0] -= GRIPPER_OFFSET_W;
+            mailbox_offset_transform[1] += 0.03;
         }
         // else
         // {
