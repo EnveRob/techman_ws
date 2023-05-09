@@ -85,6 +85,10 @@ int main(int argc, char **argv)
         // current_direction += ROTATION_STEP;
         current_direction -= ROTATION_STEP;
     }
+    std::vector<double> mailbox_transform{0, -0.3, 0, 0, 0, 0, 1};
+    new_frame::fixedFrame_add(mailbox_transform, "mailbox_opening_offset", "mailbox_opening");
+    std::vector<double> mailbox_transform{0, -0.2, 0, 0, 0, 0, 1};
+    new_frame::fixedFrame_add(mailbox_transform, "mailbox_opening_offset", "mailbox_opening_offset_2");
 
     if (find_mailbox)
     {
@@ -133,12 +137,14 @@ int main(int argc, char **argv)
     ROS_INFO("Move to mailbox opening");
     std::cout << "------------------------------------------------------" << std::endl;
     // std::vector<double> movement = {-GRIPPER_OFFSET_W, -0.25, 0.0, 0.0}; // x, y, z, theta
-    std::vector<double> movement = {0, -0.20, 0.0, 0.0}; // x, y, z, theta
-    arm_move::setRelativePosition(nh, move_group, my_plan, "mailbox_opening_offset", movement);
+    // std::vector<double> movement = {0, -0.20, 0.0, 0.0}; // x, y, z, theta
+    // arm_move::setRelativePosition(nh, move_group, my_plan, "mailbox_opening_offset", movement);
+    new_frame::waitforTransform("mailbox_opening_offset_2", targetTransform);
+    arm_move::setTargetPosition(nh, move_group, my_plan, targetTransform);
     ROS_INFO("Slow down");
     // movement = {-GRIPPER_OFFSET_W, -0.35, 0.0, 0.0}; // x, y, z, theta
-    movement = {0, -0.35, 0.0, 0.0}; // x, y, z, theta
-    arm_move::setRelativePosition(nh, move_group, my_plan, "mailbox_opening_offset", movement, forceSubsriber);
+    std::vector<double> movement = {0, -0.15, 0.0, 0.0}; // x, y, z, theta
+    arm_move::setRelativePosition(nh, move_group, my_plan, "mailbox_opening_offset_2", movement, forceSubsriber);
 
     // 輸入任意鍵以繼續
     std::cout << "Press any key to continue..." << std::endl;
