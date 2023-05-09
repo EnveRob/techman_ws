@@ -211,7 +211,7 @@ namespace arm_move
     if (error_code.val == moveit_msgs::MoveItErrorCodes::SUCCESS)
     {
       // 均勻增加控制點
-      double point_spacing = 0.001; // 每個控制點之間的距離
+      double point_spacing = 0.002; // 每個控制點之間的距離
       moveit_msgs::RobotTrajectory trajectory = my_plan.trajectory_;
       std::vector<trajectory_msgs::JointTrajectoryPoint> new_points;
       new_points.push_back(trajectory.joint_trajectory.points[0]);
