@@ -293,8 +293,8 @@ void cameraCallback(const std_msgs::String::ConstPtr &msg)
 
         // ------------------------ 將座標平移至信箱30公分處座標 ------------------------
         mailbox_offset_transform[2] -= 0.3;
-        mailbox_offset_transform[2] -= GRIPPER_OFFSET_D;
-        mailbox_offset_transform[1] += GRIPPER_OFFSET_H;
+        // mailbox_offset_transform[2] -= GRIPPER_OFFSET_D;
+        // mailbox_offset_transform[1] -= GRIPPER_OFFSET_H;
         mailbox_offset_transform[0] -= GRIPPER_OFFSET_W;
 
         // ------------------------ 發布信箱座標 ------------------------
