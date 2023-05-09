@@ -6,7 +6,6 @@
 #define GRIPPER_OFFSET_D 0.02795         // 相機距离夾爪的深度偏移量
 #define GRIPPER_OFFSET_H 0.0585          // 相機距离夾爪的高度偏移量
 #define GRIPPER_OFFSET_W 0.05            // 相機距离夾爪的橫向偏移量
-#define MOVEMENT_STEP 0.005
 #define ROTATION_STEP 0.1745
 
 #endif
