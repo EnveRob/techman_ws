@@ -1,10 +1,9 @@
 #ifndef ARM_MOVE_H
 #define ARM_MOVE_H
+#define FORCE_X_THRESHOLD 350.0
 
 #include <ros/ros.h>
 #include "force_feedback.h"
-#include <tf/transform_listener.h>
-#include <moveit/move_group_interface/move_group_interface.h>
 
 namespace arm_move
 {

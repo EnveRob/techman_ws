@@ -3,7 +3,7 @@
 #include "arm_move.h"
 #include "new_frame.h"
 #include "force_feedback.h"
-#include "std_msgs/String.h"
+#include <std_msgs/String.h>
 #include <std_msgs/UInt8.h>
 #include <tf/transform_listener.h>
 
@@ -20,23 +20,22 @@ int main(int argc, char **argv)
     ros::AsyncSpinner spinner(1);
     spinner.start();
 
+    // 创建MoveGroupInterface对象，用于规划和控制机械臂
+    moveit::planning_interface::MoveGroupInterface::Plan my_plan;
+    moveit::planning_interface::MoveGroupInterface move_group(PLANNING_GROUP);
+    move_group.setEndEffectorLink(END_EFFECTOR_LINK);
+    move_group.setPlannerId("RRTstar");
+    move_group.setGoalTolerance(0.002);
+
     // 創建一個Subscriber，訂閱camera_data
     ros::Subscriber sub = nh.subscribe("camera_data", 10, &cameraCallback);
     ros::Publisher pub = nh.advertise<std_msgs::UInt8>("gripper_cmd", 1000);
-    force_feedback::ForceCallback forceSubsriber;
+    force_feedback::ForceCallback forceSubsriber(move_group, my_plan);
 
     // 创建一个监听器，监听所有tf变换，缓冲10s
     tf::TransformListener listener;
     tf::TransformListener listener_check;
     tf::StampedTransform targetTransform;
-
-    // 创建MoveGroupInterface对象，用于规划和控制机械臂
-    moveit::planning_interface::MoveGroupInterface move_group(PLANNING_GROUP);
-    move_group.setEndEffectorLink(END_EFFECTOR_LINK);
-    // move_group.setPlannerId("RRTstar");
-    move_group.setGoalTolerance(0.002);
-
-    moveit::planning_interface::MoveGroupInterface::Plan my_plan;
 
     /*// ------------------------ 手臂往距離信箱30公分處移動 ------------------------
     ROS_INFO("Move to initial position");
