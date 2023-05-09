@@ -245,6 +245,15 @@ namespace arm_move
         }
         new_points.push_back(curr_point);
       }
+      for (int i = 1; i < new_points.size(); ++i)
+      {
+        double time_diff = (new_points[i].time_from_start - new_points[i - 1].time_from_start).toSec();
+        if (time_diff > 0.05)
+        {
+          new_points[i].time_from_start = new_points[i - 1].time_from_start + ros::Duration(0.05);
+        }
+      }
+
       trajectory.joint_trajectory.points = new_points;
       my_plan.trajectory_ = trajectory;
 
