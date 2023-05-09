@@ -2,6 +2,8 @@
 #include "arm_move.h"
 #include "new_frame.h"
 #include <tf/transform_listener.h>
+#include <moveit/robot_trajectory/robot_trajectory.h>
+#include <moveit/trajectory_processing/iterative_time_parameterization.h>
 
 namespace arm_move
 {
@@ -35,7 +37,7 @@ namespace arm_move
         }
       }
     }
-    std::cout << "joints_reached_goal" << std::endl;
+    ROS_INFO("joints_reached_goal");
   }
 
   void setTargetPosition(
@@ -63,9 +65,9 @@ namespace arm_move
 
     // 将目标位置转换为机械臂的姿态
     move_group.setPoseTarget(target_pose);
-    ROS_INFO("\ntarget_pose \n(x, y, z): %.2f, %.2f, %.2f, \n(qx, qy, qz, qw): %.2f, %.2f, %.2f, %.2f",
-             target_pose.position.x, target_pose.position.y, target_pose.position.z,
-             target_pose.orientation.x, target_pose.orientation.y, target_pose.orientation.z, target_pose.orientation.w);
+    printf("target_pose \n(x, y, z): %.2f, %.2f, %.2f, \n(qx, qy, qz, qw): %.2f, %.2f, %.2f, %.2f\n",
+           target_pose.position.x, target_pose.position.y, target_pose.position.z,
+           target_pose.orientation.x, target_pose.orientation.y, target_pose.orientation.z, target_pose.orientation.w);
 
     // 规划机械臂的运动路径
     moveit_msgs::MoveItErrorCodes error_code = move_group.plan(my_plan);
@@ -94,14 +96,14 @@ namespace arm_move
         }
         else
         {
-          ROS_INFO("current_error \n(x, y, z): %.2f, %.2f, %.2f, \n(qx, qy, qz, qw): %.2f, %.2f, %.2f, %.2f",
-                   std::abs(current_pose.pose.position.x - target_pose.position.x),
-                   std::abs(current_pose.pose.position.y - target_pose.position.y),
-                   std::abs(current_pose.pose.position.z - target_pose.position.z),
-                   std::abs(current_pose.pose.orientation.x - target_pose.orientation.x),
-                   std::abs(current_pose.pose.orientation.y - target_pose.orientation.y),
-                   std::abs(current_pose.pose.orientation.z - target_pose.orientation.z),
-                   std::abs(current_pose.pose.orientation.w - target_pose.orientation.w));
+          printf("current_error \n(x, y, z): %.2f, %.2f, %.2f, \n(qx, qy, qz, qw): %.2f, %.2f, %.2f, %.2f\n",
+                 std::abs(current_pose.pose.position.x - target_pose.position.x),
+                 std::abs(current_pose.pose.position.y - target_pose.position.y),
+                 std::abs(current_pose.pose.position.z - target_pose.position.z),
+                 std::abs(current_pose.pose.orientation.x - target_pose.orientation.x),
+                 std::abs(current_pose.pose.orientation.y - target_pose.orientation.y),
+                 std::abs(current_pose.pose.orientation.z - target_pose.orientation.z),
+                 std::abs(current_pose.pose.orientation.w - target_pose.orientation.w));
           reached_goal = false;
         }
       }
@@ -138,14 +140,14 @@ namespace arm_move
     target_pose.pose.orientation = tf::createQuaternionMsgFromRollPitchYaw(value_adjust[3], 0, 0);
 
     // 輸出target_pose
-    ROS_INFO("target_pose \n(x, y, z): %.2f, %.2f, %.2f, \n(qx, qy, qz, qw): %.2f, %.2f, %.2f, %.2f)",
-             target_pose.pose.position.x,
-             target_pose.pose.position.y,
-             target_pose.pose.position.z,
-             target_pose.pose.orientation.x,
-             target_pose.pose.orientation.y,
-             target_pose.pose.orientation.z,
-             target_pose.pose.orientation.w);
+    printf("target_pose \n(x, y, z): %.2f, %.2f, %.2f, \n(qx, qy, qz, qw): %.2f, %.2f, %.2f, %.2f\n",
+           target_pose.pose.position.x,
+           target_pose.pose.position.y,
+           target_pose.pose.position.z,
+           target_pose.pose.orientation.x,
+           target_pose.pose.orientation.y,
+           target_pose.pose.orientation.z,
+           target_pose.pose.orientation.w);
 
     // 将目标位置转换为机械臂的姿态
     move_group.setPoseTarget(target_pose);
@@ -171,7 +173,7 @@ namespace arm_move
       moveit::planning_interface::MoveGroupInterface::Plan &my_plan,
       std::string reference_frame,
       std::vector<double> value_adjust, // x, y, z, theta
-      force_feedback::ForceCallback feedback_controller)
+      force_feedback::ForceCallback &feedback_controller)
   {
     // 获取机械臂的当前姿态
     moveit::core::RobotStatePtr current_state = move_group.getCurrentState();
@@ -190,24 +192,62 @@ namespace arm_move
     target_pose.pose.orientation = tf::createQuaternionMsgFromRollPitchYaw(value_adjust[3], 0, 0);
 
     // 輸出target_pose
-    ROS_INFO("target_pose \n(x, y, z): %.2f, %.2f, %.2f, \n(qx, qy, qz, qw): %.2f, %.2f, %.2f, %.2f)",
-             target_pose.pose.position.x,
-             target_pose.pose.position.y,
-             target_pose.pose.position.z,
-             target_pose.pose.orientation.x,
-             target_pose.pose.orientation.y,
-             target_pose.pose.orientation.z,
-             target_pose.pose.orientation.w);
+    printf("target_pose \n(x, y, z): %.2f, %.2f, %.2f, \n(qx, qy, qz, qw): %.2f, %.2f, %.2f, %.2f\n",
+           target_pose.pose.position.x,
+           target_pose.pose.position.y,
+           target_pose.pose.position.z,
+           target_pose.pose.orientation.x,
+           target_pose.pose.orientation.y,
+           target_pose.pose.orientation.z,
+           target_pose.pose.orientation.w);
 
     // 将目标位置转换为机械臂的姿态
     move_group.setPoseTarget(target_pose);
 
-    // 规划机械臂的运动路径
-    move_group.setMaxVelocityScalingFactor(0.5); // Set the maximum velocity scaling factor
+    // ------------------------ 规划机械臂的运动路径，每一個控制點之間距離小於1mm ------------------------
+
     moveit_msgs::MoveItErrorCodes error_code = move_group.plan(my_plan);
 
     if (error_code.val == moveit_msgs::MoveItErrorCodes::SUCCESS)
     {
+      // 均勻增加控制點
+      double point_spacing = 0.001; // 每個控制點之間的距離
+      moveit_msgs::RobotTrajectory trajectory = my_plan.trajectory_;
+      std::vector<trajectory_msgs::JointTrajectoryPoint> new_points;
+      new_points.push_back(trajectory.joint_trajectory.points[0]);
+      for (int i = 1; i < trajectory.joint_trajectory.points.size(); ++i)
+      {
+        trajectory_msgs::JointTrajectoryPoint prev_point = trajectory.joint_trajectory.points[i - 1];
+        trajectory_msgs::JointTrajectoryPoint curr_point = trajectory.joint_trajectory.points[i];
+        std::vector<double> prev_joint_values = prev_point.positions;
+        std::vector<double> curr_joint_values = curr_point.positions;
+        double distance = 0.0;
+        for (int j = 0; j < prev_joint_values.size(); ++j)
+        {
+          double diff = curr_joint_values[j] - prev_joint_values[j];
+          distance += diff * diff;
+        }
+        distance = std::sqrt(distance);
+        int num_points = std::ceil(distance / point_spacing); // 均勻增加控制點
+        double time_diff = curr_point.time_from_start.toSec() - prev_point.time_from_start.toSec();
+        double time_step = time_diff / num_points;
+        for (int j = 1; j < num_points; ++j)
+        {
+          trajectory_msgs::JointTrajectoryPoint new_point;
+          double alpha = static_cast<double>(j) / static_cast<double>(num_points);
+          for (int k = 0; k < curr_joint_values.size(); ++k)
+          {
+            double new_joint_value = prev_joint_values[k] + alpha * (curr_joint_values[k] - prev_joint_values[k]);
+            new_point.positions.push_back(new_joint_value);
+          }
+          new_point.time_from_start = ros::Duration(prev_point.time_from_start.toSec() + j * time_step);
+          new_points.push_back(new_point);
+        }
+        new_points.push_back(curr_point);
+      }
+      trajectory.joint_trajectory.points = new_points;
+      my_plan.trajectory_ = trajectory;
+
       // 循環執行运动路径計劃
       bool joints_reached_goal = false;
       std::vector<double> current_joint_positions;
@@ -218,7 +258,7 @@ namespace arm_move
         move_group.move();
 
         // 檢查力量是否超過閾值
-        ROS_INFO("feedback_controller.getForceValue().x: %.2f", feedback_controller.getForceValue().x);
+        printf("feedback_controller.getForceValue().x: %.2f\n", feedback_controller.getForceValue().x);
         if (feedback_controller.getForceValue().x > FORCE_X_THRESHOLD)
         {
           ROS_WARN("Force exceeds threshold, stopping execution");
@@ -244,7 +284,7 @@ namespace arm_move
             }
           }
         }
-        std::cout << "joints_reached_goal" << std::endl;
+        ROS_INFO("joints_reached_goal");
       }
 
       ROS_INFO("Motion execution complete.");

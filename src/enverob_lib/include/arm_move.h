@@ -35,7 +35,7 @@ namespace arm_move
         moveit::planning_interface::MoveGroupInterface::Plan &my_plan,
         std::string reference_frame,
         std::vector<double> value_adjust, // x, y, z, theta
-        force_feedback::ForceCallback feedback_controller);
+        force_feedback::ForceCallback &feedback_controller);
 }
 
 #endif

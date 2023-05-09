@@ -4,8 +4,8 @@ namespace force_feedback
 {
   void ForceCallback::forceCallback(const geometry_msgs::Vector3 &msg)
   {
-    ROS_INFO("Force (x, y, z): (%2f, %2f, %2f)",
-             msg.x, msg.y, msg.z);
+    printf("Force (x, y, z): (%2f, %2f, %2f)\n",
+           msg.x, msg.y, msg.z);
 
     force_value_.x = msg.x;
     force_value_.y = msg.y;

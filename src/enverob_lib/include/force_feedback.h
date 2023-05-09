@@ -16,7 +16,9 @@ namespace force_feedback
         ForceCallback() : nh_("~") // constructor
         {
             sub_ = nh_.subscribe("/force_data", 1000, &ForceCallback::forceCallback, this);
+            std::cout << "------------------------------------------------------" << std::endl;
             ROS_INFO_STREAM("Subscriber in class initialized: " << sub_.getTopic());
+            std::cout << "------------------------------------------------------" << std::endl;
         }
         /*ForceCallback() 是构造函数的名称， nh_("~") 是成员变量 nh_ 的初始化列表， ~表示节点的私有命名空间。
         在ROS中，通常会为节点命名空间添加一个 ~，表示该节点是私有的，即只能从该节点内部访问该命名空间中的ROS主题、服务等。

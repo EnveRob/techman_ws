@@ -14,14 +14,14 @@ namespace new_frame
       {
         listener.waitForTransform("base", target_frame, ros::Time(0), ros::Duration(3.0));
         listener.lookupTransform("base", target_frame, ros::Time(0), target_transform);
-        ROS_INFO("Target positon related to base \n(x, y, z): %.2f, %.2f, %.2f, \n(qx, qy, qz, qw): %.2f, %.2f, %.2f, %.2f",
-                 target_transform.getOrigin().getX(),
-                 target_transform.getOrigin().getY(),
-                 target_transform.getOrigin().getZ(),
-                 target_transform.getRotation().getX(),
-                 target_transform.getRotation().getY(),
-                 target_transform.getRotation().getZ(),
-                 target_transform.getRotation().getW());
+        printf("Target positon related to base \n(x, y, z): (%.2f, %.2f, %.2f) \n(qx, qy, qz, qw): %.2f, %.2f, %.2f, %.2f\n",
+               target_transform.getOrigin().getX(),
+               target_transform.getOrigin().getY(),
+               target_transform.getOrigin().getZ(),
+               target_transform.getRotation().getX(),
+               target_transform.getRotation().getY(),
+               target_transform.getRotation().getZ(),
+               target_transform.getRotation().getW());
         break;
       }
       catch (tf::TransformException &ex)
@@ -48,14 +48,14 @@ namespace new_frame
     ref2target.transform.rotation.z = frame_pose[5];
     ref2target.transform.rotation.w = frame_pose[6];
 
-    ROS_INFO("\nMailbox positon related to reference \n(x, y, z): %.2f, %.2f, %.2f, \n(qx, qy, qz, qw): %.2f, %.2f, %.2f, %.2f",
-             frame_pose[0],
-             frame_pose[1],
-             frame_pose[2],
-             frame_pose[3],
-             frame_pose[4],
-             frame_pose[5],
-             frame_pose[6]);
+    printf("\nMailbox positon related to reference \n(x, y, z): %.2f, %.2f, %.2f, \n(qx, qy, qz, qw): %.2f, %.2f, %.2f, %.2f\n",
+           frame_pose[0],
+           frame_pose[1],
+           frame_pose[2],
+           frame_pose[3],
+           frame_pose[4],
+           frame_pose[5],
+           frame_pose[6]);
 
     // 设置 transform 的时间戳、参考系名称和子参考系名称
     ref2target.header.stamp = ros::Time::now();

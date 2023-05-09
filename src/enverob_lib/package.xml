@@ -59,6 +59,9 @@
   <build_depend>moveit_core</build_depend>
   <build_depend>moveit_ros_planning</build_depend>
   <build_depend>moveit_ros_planning_interface</build_depend>
+  <build_depend>moveit_visual_tools</build_depend>
+  <build_depend>trajectory_msgs</build_depend>
+
 
   <build_export_depend>roscpp</build_export_depend>
   <build_export_depend>tf</build_export_depend>
@@ -67,6 +70,9 @@
   <build_export_depend>geometry_msgs</build_export_depend>
   <build_export_depend>tm_msgs</build_export_depend>
   <build_export_depend>std_msgs</build_export_depend>
+  <build_export_depend>moveit_visual_tools</build_export_depend>
+  <build_export_depend>trajectory_msgs</build_export_depend>
+
 
   <exec_depend>roscpp</exec_depend>
   <exec_depend>tf</exec_depend>
@@ -78,6 +84,8 @@
   <exec_depend>moveit_core</exec_depend>
   <exec_depend>moveit_ros_planning</exec_depend>
   <exec_depend>moveit_ros_planning_interface</exec_depend>
+  <exec_depend>moveit_visual_tools</exec_depend>
+  <exec_depend>trajectory_msgs</exec_depend>
 
   <!-- The export tag contains other, unspecified, tags -->
   <export>
