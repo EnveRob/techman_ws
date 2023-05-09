@@ -87,7 +87,7 @@ int main(int argc, char **argv)
     }
     std::vector<double> mailbox_transform{0, -0.3, 0, 0, 0, 0, 1};
     new_frame::fixedFrame_add(mailbox_transform, "mailbox_opening_offset", "mailbox_opening");
-    mailbox_transform = {0, -0.2, 0, 0, 0, 0, 1};
+    mailbox_transform = {0, -0.15, 0, 0, 0, 0, 1};
     new_frame::fixedFrame_add(mailbox_transform, "mailbox_opening_offset", "mailbox_opening_offset_2");
 
     if (find_mailbox)
@@ -143,7 +143,7 @@ int main(int argc, char **argv)
     arm_move::setTargetPosition(nh, move_group, my_plan, targetTransform);
     ROS_INFO("Slow down");
     // movement = {-GRIPPER_OFFSET_W, -0.35, 0.0, 0.0}; // x, y, z, theta
-    std::vector<double> movement = {0, -0.15, 0.0, 0.0}; // x, y, z, theta
+    std::vector<double> movement = {0, -0.20, 0.0, 0.0}; // x, y, z, theta
     arm_move::setRelativePosition(nh, move_group, my_plan, "mailbox_opening_offset_2", movement, forceSubsriber);
 
     // 輸入任意鍵以繼續
