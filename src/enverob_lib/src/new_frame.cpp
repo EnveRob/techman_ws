@@ -14,7 +14,7 @@ namespace new_frame
       {
         listener.waitForTransform("base", target_frame, ros::Time(0), ros::Duration(3.0));
         listener.lookupTransform("base", target_frame, ros::Time(0), target_transform);
-        printf("Target positon related to base \n(x, y, z): (%.2f, %.2f, %.2f) \n(qx, qy, qz, qw): %.2f, %.2f, %.2f, %.2f\n",
+        printf("Target position related to base \n(x, y, z): (%.2f, %.2f, %.2f) \n(qx, qy, qz, qw): %.2f, %.2f, %.2f, %.2f\n",
                target_transform.getOrigin().getX(),
                target_transform.getOrigin().getY(),
                target_transform.getOrigin().getZ(),
@@ -48,7 +48,7 @@ namespace new_frame
     ref2target.transform.rotation.z = frame_pose[5];
     ref2target.transform.rotation.w = frame_pose[6];
 
-    printf("\nMailbox positon related to reference \n(x, y, z): %.2f, %.2f, %.2f, \n(qx, qy, qz, qw): %.2f, %.2f, %.2f, %.2f\n",
+    printf("Mailbox position related to reference \n(x, y, z): %.2f, %.2f, %.2f, \n(qx, qy, qz, qw): %.2f, %.2f, %.2f, %.2f\n",
            frame_pose[0],
            frame_pose[1],
            frame_pose[2],
