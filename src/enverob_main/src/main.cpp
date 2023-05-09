@@ -87,7 +87,7 @@ int main(int argc, char **argv)
     }
     std::vector<double> mailbox_transform{0, -0.3, 0, 0, 0, 0, 1};
     new_frame::fixedFrame_add(mailbox_transform, "mailbox_opening_offset", "mailbox_opening");
-    mailbox_transform{0, -0.2, 0, 0, 0, 0, 1};
+    mailbox_transform = {0, -0.2, 0, 0, 0, 0, 1};
     new_frame::fixedFrame_add(mailbox_transform, "mailbox_opening_offset", "mailbox_opening_offset_2");
 
     if (find_mailbox)
