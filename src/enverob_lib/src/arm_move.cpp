@@ -96,14 +96,14 @@ namespace arm_move
         }
         else
         {
-          printf("current_error \n(x, y, z): %.2f, %.2f, %.2f, \n(qx, qy, qz, qw): %.2f, %.2f, %.2f, %.2f\n",
-                 std::abs(current_pose.pose.position.x - target_pose.position.x),
-                 std::abs(current_pose.pose.position.y - target_pose.position.y),
-                 std::abs(current_pose.pose.position.z - target_pose.position.z),
-                 std::abs(current_pose.pose.orientation.x - target_pose.orientation.x),
-                 std::abs(current_pose.pose.orientation.y - target_pose.orientation.y),
-                 std::abs(current_pose.pose.orientation.z - target_pose.orientation.z),
-                 std::abs(current_pose.pose.orientation.w - target_pose.orientation.w));
+          // printf("current_error \n(x, y, z): %.2f, %.2f, %.2f, \n(qx, qy, qz, qw): %.2f, %.2f, %.2f, %.2f\n",
+          //        std::abs(current_pose.pose.position.x - target_pose.position.x),
+          //        std::abs(current_pose.pose.position.y - target_pose.position.y),
+          //        std::abs(current_pose.pose.position.z - target_pose.position.z),
+          //        std::abs(current_pose.pose.orientation.x - target_pose.orientation.x),
+          //        std::abs(current_pose.pose.orientation.y - target_pose.orientation.y),
+          //        std::abs(current_pose.pose.orientation.z - target_pose.orientation.z),
+          //        std::abs(current_pose.pose.orientation.w - target_pose.orientation.w));
           reached_goal = false;
         }
       }

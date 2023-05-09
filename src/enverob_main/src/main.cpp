@@ -92,7 +92,7 @@ int main(int argc, char **argv)
         ROS_INFO("Move to 30cm rear of mailbox");
         std::cout << "------------------------------------------------------" << std::endl;
         arm_move::setTargetPosition(nh, move_group, my_plan, targetTransform);
-        find_mailbox = 0;
+        // find_mailbox = 0;
     }
     else
     {
