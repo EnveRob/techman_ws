@@ -49,13 +49,8 @@ namespace new_frame
     ref2target.transform.rotation.w = frame_pose[6];
 
     printf("Mailbox position related to reference \n(x, y, z): %.2f, %.2f, %.2f, \n(qx, qy, qz, qw): %.2f, %.2f, %.2f, %.2f\n",
-           frame_pose[0],
-           frame_pose[1],
-           frame_pose[2],
-           frame_pose[3],
-           frame_pose[4],
-           frame_pose[5],
-           frame_pose[6]);
+           frame_pose[0], frame_pose[1], frame_pose[2],
+           frame_pose[3], frame_pose[4], frame_pose[5], frame_pose[6]);
 
     // 设置 transform 的时间戳、参考系名称和子参考系名称
     ref2target.header.stamp = ros::Time::now();

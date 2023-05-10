@@ -87,23 +87,11 @@ namespace arm_move
         if (std::abs(current_pose.pose.position.x - target_pose.position.x) <= error &&
             std::abs(current_pose.pose.position.y - target_pose.position.y) <= error &&
             std::abs(current_pose.pose.position.z - target_pose.position.z) <= error)
-        // std::abs(current_pose.pose.orientation.x - target_pose.orientation.x) <= error &&
-        // std::abs(current_pose.pose.orientation.y - target_pose.orientation.y) <= error &&
-        // std::abs(current_pose.pose.orientation.z - target_pose.orientation.z) <= error &&
-        // std::abs(current_pose.pose.orientation.w - target_pose.orientation.w) <= error)
         {
           reached_goal = true;
         }
         else
         {
-          // printf("current_error \n(x, y, z): %.2f, %.2f, %.2f, \n(qx, qy, qz, qw): %.2f, %.2f, %.2f, %.2f\n",
-          //        std::abs(current_pose.pose.position.x - target_pose.position.x),
-          //        std::abs(current_pose.pose.position.y - target_pose.position.y),
-          //        std::abs(current_pose.pose.position.z - target_pose.position.z),
-          //        std::abs(current_pose.pose.orientation.x - target_pose.orientation.x),
-          //        std::abs(current_pose.pose.orientation.y - target_pose.orientation.y),
-          //        std::abs(current_pose.pose.orientation.z - target_pose.orientation.z),
-          //        std::abs(current_pose.pose.orientation.w - target_pose.orientation.w));
           reached_goal = false;
         }
       }
@@ -175,6 +163,9 @@ namespace arm_move
       std::vector<double> value_adjust, // x, y, z, theta
       force_feedback::ForceCallback &feedback_controller)
   {
+    move_group.setPlannerId("PRM");
+    ROS_WARN("Set Planner to PRM");
+
     // 获取机械臂的当前姿态
     moveit::core::RobotStatePtr current_state = move_group.getCurrentState();
     std::vector<double> joint_group_positions;
@@ -245,12 +236,13 @@ namespace arm_move
         }
         new_points.push_back(curr_point);
       }
+
       for (int i = 1; i < new_points.size(); ++i)
       {
         double time_diff = (new_points[i].time_from_start - new_points[i - 1].time_from_start).toSec();
-        if (time_diff > 0.05)
+        if (time_diff > 0.001)
         {
-          new_points[i].time_from_start = new_points[i - 1].time_from_start + ros::Duration(0.05);
+          new_points[i].time_from_start = new_points[i - 1].time_from_start + ros::Duration(0.001);
         }
       }
 
@@ -302,5 +294,7 @@ namespace arm_move
     {
       ROS_ERROR("Failed to plan: %d", error_code.val);
     }
+    move_group.setPlannerId("RRTstar");
+    ROS_WARN("Set Planner back to RRTstar");
   }
 }
