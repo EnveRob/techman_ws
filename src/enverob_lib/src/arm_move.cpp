@@ -140,6 +140,24 @@ namespace arm_move
            target_pose.pose.orientation.z,
            target_pose.pose.orientation.w);
 
+    // 定義一個底座到目標參考幀的變換
+    geometry_msgs::TransformStamped tf;
+    tf = tf_buffer->lookupTransform("base_link", target_pose.frame_id, ros::Time(0), ros::Duration(1.0));
+
+    // 將目標姿態轉換為底座參考幀中的姿態
+    geometry_msgs::PoseStamped base_pose;
+    tf2::doTransform(target_pose, base_pose, tf);
+
+    // 輸出base_pose
+    printf("base_pose \n(x, y, z): %.2f, %.2f, %.2f, \n(qx, qy, qz, qw): %.2f, %.2f, %.2f, %.2f\n",
+           base_pose.pose.position.x,
+           base_pose.pose.position.y,
+           base_pose.pose.position.z,
+           base_pose.pose.orientation.x,
+           base_pose.pose.orientation.y,
+           base_pose.pose.orientation.z,
+           base_pose.pose.orientation.w);
+
     // 将目标位置转换为机械臂的姿态
     move_group.setPoseTarget(target_pose);
     move_group.setStartState(*current_state);
@@ -161,21 +179,21 @@ namespace arm_move
       while (nh.ok() && reached_goal != 1)
       {
         current_pose = move_group.getCurrentPose();
-        if (std::abs(current_pose.pose.position.x - target_pose.pose.position.x) <= error &&
-            std::abs(current_pose.pose.position.y - target_pose.pose.position.y) <= error &&
-            std::abs(current_pose.pose.position.z - target_pose.pose.position.z) <= error)
+        if (std::abs(current_pose.pose.position.x - base_pose.pose.position.x) <= error &&
+            std::abs(current_pose.pose.position.y - base_pose.pose.position.y) <= error &&
+            std::abs(current_pose.pose.position.z - base_pose.pose.position.z) <= error)
         {
           reached_goal = true;
         }
         else
         {
-          // printf("current_pose.pose.position.x - target_pose.pose.position.x = %.2f - %.2f = %.2f\ncurrent_pose.pose.position.y - target_pose.pose.position.y = % .2f - % .2f = % .2f\ncurrent_pose.pose.position.z - target_pose.pose.position.z = % .2f - % .2f = % .2f\n",
-          //        current_pose.pose.position.x, target_pose.pose.position.x,
-          //        std::abs(current_pose.pose.position.x - target_pose.pose.position.x),
-          //        current_pose.pose.position.y, target_pose.pose.position.y,
-          //        std::abs(current_pose.pose.position.y - target_pose.pose.position.y),
-          //        current_pose.pose.position.z, target_pose.pose.position.z,
-          //        std::abs(current_pose.pose.position.z - target_pose.pose.position.z));
+          printf("current_pose.pose.position.x - base_pose.pose.position.x = %.2f - %.2f = %.2f\ncurrent_pose.pose.position.y - base_pose.pose.position.y = % .2f - % .2f = % .2f\ncurrent_pose.pose.position.z - base_pose.pose.position.z = % .2f - % .2f = % .2f\n",
+                 current_pose.pose.position.x, base_pose.pose.position.x,
+                 std::abs(current_pose.pose.position.x - base_pose.pose.position.x),
+                 current_pose.pose.position.y, base_pose.pose.position.y,
+                 std::abs(current_pose.pose.position.y - base_pose.pose.position.y),
+                 current_pose.pose.position.z, base_pose.pose.position.z,
+                 std::abs(current_pose.pose.position.z - base_pose.pose.position.z));
 
           reached_goal = false;
         }
