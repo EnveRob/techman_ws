@@ -141,6 +141,7 @@ namespace arm_move
 
     // 将目标位置转换为机械臂的姿态
     move_group.setPoseTarget(target_pose);
+    move_group.setStartState(*current_state);
 
     // 规划机械臂的运动路径
     moveit_msgs::MoveItErrorCodes error_code = move_group.plan(my_plan);

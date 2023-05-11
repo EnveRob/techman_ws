@@ -29,7 +29,7 @@ int main(int argc, char **argv)
     // 设置规划器
     move_group.setEndEffectorLink(END_EFFECTOR_LINK);
     move_group.setPlannerId("RRTstar");
-    move_group.setPlanningTime(3.0);
+    move_group.setPlanningTime(5.0);
     move_group.setGoalTolerance(0.002);
 
     // 創建一個Subscriber，訂閱camera_data
@@ -124,8 +124,8 @@ int main(int argc, char **argv)
     double r = tf::tfDistance(current_position, reference_position);
     double theta = M_PI / 180 * 30;
 
-    std::vector<double> movement = {0.0, r * cos(theta), -r * sin(theta), 0.0}; // x, y, z, theta
-    arm_move::setRelativePosition(nh, move_group, my_plan, "mailbox_opening", movement);
+    // std::vector<double> movement = {0.0, r * cos(theta), -r * sin(theta), 0.0}; // x, y, z, theta
+    // arm_move::setRelativePosition(nh, move_group, my_plan, "mailbox_opening", movement);
 
     movement = {0.0, r * cos(theta), -r * sin(theta), -theta}; // x, y, z, theta
     arm_move::setRelativePosition(nh, move_group, my_plan, "mailbox_opening", movement);
