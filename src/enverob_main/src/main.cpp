@@ -30,7 +30,7 @@ int main(int argc, char **argv)
     move_group.setEndEffectorLink(END_EFFECTOR_LINK);
     move_group.setPlannerId("RRTstar");
     move_group.setPlanningTime(3.0);
-    move_group.setGoalTolerance(0.002);
+    move_group.setGoalTolerance(0.005);
 
     // 創建一個Subscriber，訂閱camera_data
     ros::Subscriber sub = nh.subscribe("camera_data", 10, &cameraCallback);
