@@ -169,6 +169,11 @@ namespace arm_move
         }
         else
         {
+          printf("error \n(x, y, z): %.2f, %.2f, %.2f\n",
+                 std::abs(current_pose.pose.position.x - target_pose.pose.position.x),
+                 std::abs(current_pose.pose.position.y - target_pose.pose.position.y),
+                 std::abs(current_pose.pose.position.z - target_pose.pose.position.z));
+
           reached_goal = false;
         }
       }
