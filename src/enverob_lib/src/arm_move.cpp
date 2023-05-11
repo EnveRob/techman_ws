@@ -169,13 +169,13 @@ namespace arm_move
         }
         else
         {
-          printf("current_pose.pose.position.x - target_pose.pose.position.x = %.2f - %.2f = %.2f\ncurrent_pose.pose.position.y - target_pose.pose.position.y = % .2f - % .2f = % .2f\ncurrent_pose.pose.position.z - target_pose.pose.position.z = % .2f - % .2f = % .2f",
-                 current_pose.pose.position.x, target_pose.pose.position.x,
-                 std::abs(current_pose.pose.position.x - target_pose.pose.position.x),
-                 current_pose.pose.position.y, target_pose.pose.position.y,
-                 std::abs(current_pose.pose.position.y - target_pose.pose.position.y),
-                 current_pose.pose.position.z, target_pose.pose.position.z,
-                 std::abs(current_pose.pose.position.z - target_pose.pose.position.z));
+          // printf("current_pose.pose.position.x - target_pose.pose.position.x = %.2f - %.2f = %.2f\ncurrent_pose.pose.position.y - target_pose.pose.position.y = % .2f - % .2f = % .2f\ncurrent_pose.pose.position.z - target_pose.pose.position.z = % .2f - % .2f = % .2f\n",
+          //        current_pose.pose.position.x, target_pose.pose.position.x,
+          //        std::abs(current_pose.pose.position.x - target_pose.pose.position.x),
+          //        current_pose.pose.position.y, target_pose.pose.position.y,
+          //        std::abs(current_pose.pose.position.y - target_pose.pose.position.y),
+          //        current_pose.pose.position.z, target_pose.pose.position.z,
+          //        std::abs(current_pose.pose.position.z - target_pose.pose.position.z));
 
           reached_goal = false;
         }
