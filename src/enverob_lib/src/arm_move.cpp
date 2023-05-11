@@ -66,6 +66,7 @@ namespace arm_move
 
     // 将目标位置转换为机械臂的姿态
     move_group.setPoseTarget(target_pose);
+    move_group.setStartState(*current_state);
     printf("target_pose \n(x, y, z): %.2f, %.2f, %.2f, \n(qx, qy, qz, qw): %.2f, %.2f, %.2f, %.2f\n",
            target_pose.position.x, target_pose.position.y, target_pose.position.z,
            target_pose.orientation.x, target_pose.orientation.y, target_pose.orientation.z, target_pose.orientation.w);
@@ -197,6 +198,7 @@ namespace arm_move
 
     // 将目标位置转换为机械臂的姿态
     move_group.setPoseTarget(target_pose);
+    move_group.setStartState(*current_state);
 
     // ------------------------ 规划机械臂的运动路径，每一個控制點之間距離小於1mm ------------------------
 
