@@ -143,8 +143,7 @@ namespace arm_move
 
     // 定義一個底座到目標參考幀的變換
     tf::StampedTransform target2base;
-    tf::TransformListener listener;
-    listener.lookupTransform("base", target_pose.header.frame_id, ros::Time(0), target2base);
+    new_frame::waitforTransform(reference_frame, target2base);
     geometry_msgs::TransformStamped target2basetf;
     tf::transformStampedTFToMsg(target2base, target2basetf);
 
