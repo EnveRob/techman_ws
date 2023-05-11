@@ -152,6 +152,28 @@ namespace arm_move
       // 执行机械臂的运动路径
       move_group.execute(my_plan);
       ROS_INFO("Set Target Position");
+
+      // 等待機械手臂到達目標位置
+      bool reached_goal = false;
+      double error = 0.05;
+      geometry_msgs::PoseStamped current_pose;
+
+      while (nh.ok() && reached_goal != 1)
+      {
+        current_pose = move_group.getCurrentPose();
+        if (std::abs(current_pose.pose.position.x - target_pose.position.x) <= error &&
+            std::abs(current_pose.pose.position.y - target_pose.position.y) <= error &&
+            std::abs(current_pose.pose.position.z - target_pose.position.z) <= error)
+        {
+          reached_goal = true;
+        }
+        else
+        {
+          reached_goal = false;
+        }
+      }
+
+      ROS_INFO("Target Position Reached");
     }
     else
     {
