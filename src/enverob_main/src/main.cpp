@@ -133,6 +133,10 @@ int main(int argc, char **argv)
     mailbox_transform = {0, -0.15, 0, 0, 0, 0, 1};
     new_frame::fixedFrame_add(mailbox_transform, "gripper_link", "mailbox_opening_offset_2");
 
+    // 輸入任意鍵以繼續
+    std::cout << "Press any key to continue..." << std::endl;
+    std::cin.ignore();
+
     std::cout << "------------------------------------------------------" << std::endl;
     ROS_INFO("Move directly to mailbox opening");
     std::cout << "------------------------------------------------------" << std::endl;

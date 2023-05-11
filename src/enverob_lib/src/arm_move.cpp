@@ -48,13 +48,6 @@ namespace arm_move
       moveit::planning_interface::MoveGroupInterface::Plan &my_plan,
       tf::StampedTransform target)
   {
-    // 获取机械臂的当前姿态
-    moveit::core::RobotStatePtr current_state = move_group.getCurrentState();
-    std::vector<double> joint_group_positions;
-    current_state->copyJointGroupPositions(
-        move_group.getCurrentState()->getRobotModel()->getJointModelGroup(move_group.getName()),
-        joint_group_positions);
-
     // 创建要移动到的目标位置
     geometry_msgs::Pose target_pose;
     target_pose.position.x = target.getOrigin().getX();
@@ -65,9 +58,12 @@ namespace arm_move
     target_pose.orientation.z = target.getRotation().getZ();
     target_pose.orientation.w = target.getRotation().getW();
 
+    // 获取机械臂的当前姿态
+    moveit::core::RobotStatePtr current_state = move_group.getCurrentState();
+    move_group.setStartState(*current_state);
+
     // 将目标位置转换为机械臂的姿态
     move_group.setPoseTarget(target_pose);
-    move_group.setStartState(*current_state);
     printf("target_pose \n(x, y, z): %.2f, %.2f, %.2f, \n(qx, qy, qz, qw): %.2f, %.2f, %.2f, %.2f\n",
            target_pose.position.x, target_pose.position.y, target_pose.position.z,
            target_pose.orientation.x, target_pose.orientation.y, target_pose.orientation.z, target_pose.orientation.w);
@@ -125,10 +121,6 @@ namespace arm_move
   {
     // 获取机械臂的当前姿态
     moveit::core::RobotStatePtr current_state = move_group.getCurrentState();
-    std::vector<double> joint_group_positions;
-    current_state->copyJointGroupPositions(
-        move_group.getCurrentState()->getRobotModel()->getJointModelGroup(move_group.getName()),
-        joint_group_positions);
 
     // 创建要移动到的目标位置
     geometry_msgs::PoseStamped target_pose;
@@ -231,10 +223,6 @@ namespace arm_move
 
     // 获取机械臂的当前姿态
     moveit::core::RobotStatePtr current_state = move_group.getCurrentState();
-    std::vector<double> joint_group_positions;
-    current_state->copyJointGroupPositions(
-        move_group.getCurrentState()->getRobotModel()->getJointModelGroup(move_group.getName()),
-        joint_group_positions);
 
     // 创建要移动到的目标位置
     geometry_msgs::PoseStamped target_pose;
