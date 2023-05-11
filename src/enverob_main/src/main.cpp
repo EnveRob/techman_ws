@@ -122,7 +122,7 @@ int main(int argc, char **argv)
     tf::Vector3 reference_position = mailbox_opening_transform.getOrigin();
 
     double r = tf::tfDistance(current_position, reference_position);
-    double theta = M_PI / 180 * 30;
+    double theta = M_PI / 180 * 20;
 
     // std::vector<double> movement = {0.0, r * cos(theta), -r * sin(theta), 0.0}; // x, y, z, theta
     // arm_move::setRelativePosition(nh, move_group, my_plan, "mailbox_opening", movement);
