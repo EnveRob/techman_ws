@@ -2,6 +2,7 @@
 #include "arm_move.h"
 #include "new_frame.h"
 #include <tf/transform_listener.h>
+#include <tf2_geometry_msgs/tf2_geometry_msgs.h>
 #include <moveit/robot_trajectory/robot_trajectory.h>
 #include <moveit/trajectory_processing/iterative_time_parameterization.h>
 
@@ -141,12 +142,15 @@ namespace arm_move
            target_pose.pose.orientation.w);
 
     // 定義一個底座到目標參考幀的變換
-    geometry_msgs::TransformStamped tf;
-    tf = tf_buffer->lookupTransform("base_link", target_pose.frame_id, ros::Time(0), ros::Duration(1.0));
+    tf::StampedTransform target2base;
+    tf::TransformListener listener;
+    listener.lookupTransform("base", target_pose.header.frame_id, ros::Time(0), target2base);
+    geometry_msgs::TransformStamped target2basetf;
+    tf::transformStampedTFToMsg(target2base, target2basetf);
 
     // 將目標姿態轉換為底座參考幀中的姿態
     geometry_msgs::PoseStamped base_pose;
-    tf2::doTransform(target_pose, base_pose, tf);
+    tf2::doTransform(target_pose, base_pose, target2basetf);
 
     // 輸出base_pose
     printf("base_pose \n(x, y, z): %.2f, %.2f, %.2f, \n(qx, qy, qz, qw): %.2f, %.2f, %.2f, %.2f\n",
