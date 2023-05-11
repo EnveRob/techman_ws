@@ -161,9 +161,9 @@ namespace arm_move
       while (nh.ok() && reached_goal != 1)
       {
         current_pose = move_group.getCurrentPose();
-        if (std::abs(current_pose.pose.position.x - target_pose.position.x) <= error &&
-            std::abs(current_pose.pose.position.y - target_pose.position.y) <= error &&
-            std::abs(current_pose.pose.position.z - target_pose.position.z) <= error)
+        if (std::abs(current_pose.pose.position.x - target_pose.pose.position.x) <= error &&
+            std::abs(current_pose.pose.position.y - target_pose.pose.position.y) <= error &&
+            std::abs(current_pose.pose.position.z - target_pose.pose.position.z) <= error)
         {
           reached_goal = true;
         }
