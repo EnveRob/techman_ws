@@ -138,6 +138,10 @@ add_executable(
   ${enverob_lib_SOURCES}  
 )
 
+add_executable(
+  force_data_logger src/force_data_logger.cpp
+  ${enverob_lib_SOURCES}  
+)
 ## Rename C++ executable without prefix
 ## The above recommended prefix causes long target names, the following renames the
 ## target back to the shorter version for ease of user use
@@ -150,6 +154,11 @@ add_executable(
 
 ## Specify libraries to link a library or executable target against
 target_link_libraries(${PROJECT_NAME}
+  ${catkin_LIBRARIES}
+  enverob_lib
+)
+
+target_link_libraries(force_data_logger
   ${catkin_LIBRARIES}
   enverob_lib
 )
