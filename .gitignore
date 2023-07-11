@@ -1,6 +1,10 @@
 build/
 devel/
 src/.vscode/
+src/tm_description/meshes/gripper.stl
+src/tm_description/meshes/Gripper.stl
+src/tm5-900-moveit_config/launch/moveit.rviz
+devel/
 .vscode
 .catkin_workspace
 *.bin
