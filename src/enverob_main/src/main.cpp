@@ -108,9 +108,9 @@ int main(int argc, char **argv)
     std::cout << "Press any key to continue..." << std::endl;
     std::cin.ignore();
 
-    // ------------------------ 手臂以信箱口中心為旋轉軸，向上旋轉20度 ------------------------
+    // ------------------------ 手臂以信箱口中心為旋轉軸，向上旋轉30度 ------------------------
     std::cout << "------------------------------------------------------" << std::endl;
-    ROS_INFO("Rotate 20 degrees upward around mailbox opening");
+    ROS_INFO("Rotate 30 degrees upward around mailbox opening");
     std::cout << "------------------------------------------------------" << std::endl;
 
     geometry_msgs::PoseStamped current_pose = move_group.getCurrentPose();
@@ -124,7 +124,7 @@ int main(int argc, char **argv)
     tf::Vector3 reference_position = mailbox_opening_transform.getOrigin();
 
     double r = tf::tfDistance(current_position, reference_position);
-    double theta = M_PI / 180 * 20;
+    double theta = M_PI / 180 * 30;
 
     // std::vector<double> movement = {0.0, r * cos(theta), -r * sin(theta), 0.0}; // x, y, z, theta
     // arm_move::setRelativePosition(nh, move_group, my_plan, "mailbox_opening", movement);
