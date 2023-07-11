@@ -179,7 +179,7 @@ namespace arm_move
 
       // 等待機械手臂到達目標位置
       bool reached_goal = false;
-      double error = 0.05;
+      double error = 0.2;
       geometry_msgs::PoseStamped current_pose;
 
       while (nh.ok() && reached_goal != 1)
