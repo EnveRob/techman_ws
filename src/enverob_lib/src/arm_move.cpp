@@ -15,8 +15,11 @@ namespace arm_move
       std::vector<double> joint_group_positions // joint1~6分别代表六个关节的角度,单位为弧度
   )
   {
+    // 获取机械臂的当前姿态
+    moveit::core::RobotStatePtr current_state = move_group.getCurrentState();
+    move_group.setStartState(*current_state);
+
     // 移動機械手臂
-    std::cout << "current direction: " << joint_group_positions[0] << std::endl;
     move_group.setJointValueTarget(joint_group_positions);
     move_group.move();
 
