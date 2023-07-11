@@ -143,8 +143,8 @@ int main(int argc, char **argv)
     ROS_INFO("Move directly to mailbox opening");
     std::cout << "------------------------------------------------------" << std::endl;
 
-    new_frame::waitforTransform("mailbox_opening_offset_2", targetTransform);
-    arm_move::setTargetPosition(nh, move_group, my_plan, targetTransform);
+    // new_frame::waitforTransform("mailbox_opening_offset_2", targetTransform);
+    // arm_move::setTargetPosition(nh, move_group, my_plan, targetTransform);
     movement = {0.0, 0.00, 0.0, -theta}; // x, y, z, theta
     arm_move::setRelativePosition(nh, move_group, my_plan, "mailbox_opening", movement, forceSubsriber);
 
@@ -169,8 +169,10 @@ int main(int argc, char **argv)
     ROS_INFO("Move to initial position");
     std::cout << "------------------------------------------------------" << std::endl;
 
-    new_frame::waitforTransform("mailbox_opening_offset", targetTransform);
+    new_frame::waitforTransform("mailbox_opening_offset_2", targetTransform);
     arm_move::setTargetPosition(nh, move_group, my_plan, targetTransform);
+    // new_frame::waitforTransform("mailbox_opening_offset", targetTransform);
+    // arm_move::setTargetPosition(nh, move_group, my_plan, targetTransform);
     // target_joint = {-M_PI * 0.75, -M_PI / 3, M_PI / 3 * 2, -M_PI / 3, M_PI / 2, -M_PI / 2};
     target_joint = {-M_PI / 180 * 135, -M_PI / 180 * 30, M_PI / 180 * 150, -M_PI / 180 * 120, M_PI / 2, -M_PI / 2};
     arm_move::setJointangle(nh, move_group, my_plan, target_joint);
