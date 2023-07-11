@@ -179,14 +179,16 @@ namespace arm_move
 
       // 等待機械手臂到達目標位置
       bool reached_goal = false;
-      double error = 0.2;
+      double error = 0.05;
       geometry_msgs::PoseStamped current_pose;
 
       while (nh.ok() && reached_goal != 1)
       {
         current_pose = move_group.getCurrentPose();
-        if (std::abs(current_pose.pose.position.x - base_pose.pose.position.x) <= error &&
-            std::abs(current_pose.pose.position.y - base_pose.pose.position.y) <= error &&
+        // if (std::abs(current_pose.pose.position.x - base_pose.pose.position.x) <= error &&
+        //     std::abs(current_pose.pose.position.y - base_pose.pose.position.y) <= error &&
+        //     std::abs(current_pose.pose.position.z - base_pose.pose.position.z) <= error)
+        if (std::abs(current_pose.pose.position.y - base_pose.pose.position.y) <= error &&
             std::abs(current_pose.pose.position.z - base_pose.pose.position.z) <= error)
         {
           reached_goal = true;
