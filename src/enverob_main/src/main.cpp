@@ -5,6 +5,7 @@
 #include "force_feedback.h"
 #include <std_msgs/String.h>
 #include <std_msgs/UInt8.h>
+#include <bits/stdc++.h>
 #include <tf/transform_listener.h>
 
 bool find_mailbox = 1;
