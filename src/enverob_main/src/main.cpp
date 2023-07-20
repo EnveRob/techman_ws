@@ -173,6 +173,7 @@ int main(int argc, char **argv)
     arm_move::setTargetPosition(nh, move_group, my_plan, targetTransform);
     // new_frame::waitforTransform("mailbox_opening_offset", targetTransform);
     // arm_move::setTargetPosition(nh, move_group, my_plan, targetTransform);
+
     // target_joint = {-M_PI * 0.75, -M_PI / 3, M_PI / 3 * 2, -M_PI / 3, M_PI / 2, -M_PI / 2};
     target_joint = {-M_PI / 180 * 135, -M_PI / 180 * 30, M_PI / 180 * 150, -M_PI / 180 * 120, M_PI / 2, -M_PI / 2};
     arm_move::setJointangle(nh, move_group, my_plan, target_joint);
@@ -204,7 +205,7 @@ void cameraCallback(const std_msgs::String::ConstPtr &msg)
                v[0], v[1], v[2],
                v[3], v[4], v[5]);
         std::vector<double> mailbox_offset_transform{v[0], v[1], v[2]};
-        mailbox_offset_transform[0] -= GRIPPER_OFFSET_W;
+        // mailbox_offset_transform[0] -= GRIPPER_OFFSET_W;
         mailbox_offset_transform[1] += 0.02;
 
         tf::Quaternion q;
