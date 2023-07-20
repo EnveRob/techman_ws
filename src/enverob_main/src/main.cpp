@@ -209,7 +209,8 @@ void cameraCallback(const std_msgs::String::ConstPtr &msg)
         // mailbox_offset_transform[1] += 0.02;
 
         tf::Quaternion q;
-        q.setRPY(0, v[4], 0); // 以弧度為單位
+        // q.setRPY(0, v[4], 0); // 以弧度為單位
+        q.setRPY(0, atan2(v[3] / v[5]), 0); // 以弧度為單位
         mailbox_offset_transform.push_back(q.x());
         mailbox_offset_transform.push_back(q.y());
         mailbox_offset_transform.push_back(q.z());
