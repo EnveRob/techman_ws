@@ -78,9 +78,9 @@ int main(int argc, char **argv)
         target_joint[0] = current_direction;
         arm_move::setJointangle(nh, move_group, my_plan, target_joint);
         std::cout << "current direction: " << target_joint[0] << std::endl;
-        if (listener.waitForTransform("base", "mailbox_opening_offset", ros::Time(0), ros::Duration(0.5)))
+        if (listener.waitForTransform("base", "mailbox_opening", ros::Time(0), ros::Duration(0.5)))
         {
-            listener.lookupTransform("base", "mailbox_opening_offset", ros::Time(0), targetTransform);
+            listener.lookupTransform("base", "mailbox_opening", ros::Time(0), targetTransform);
             printf("targetTransform \n(x, y, z): %.2f, %.2f, %.2f, \n(qx, qy, qz, qw): %.2f, %.2f, %.2f, %.2f\n",
                    targetTransform.getOrigin().x(), targetTransform.getOrigin().y(), targetTransform.getOrigin().z(),
                    targetTransform.getRotation().x(), targetTransform.getRotation().y(), targetTransform.getRotation().z(), targetTransform.getRotation().w());
@@ -89,8 +89,10 @@ int main(int argc, char **argv)
         }
         current_direction -= ROTATION_STEP;
     }
-    std::vector<double> mailbox_transform{0, -0.3, 0, 0, 0, 0, 1};
-    new_frame::fixedFrame_add(mailbox_transform, "mailbox_opening_offset", "mailbox_opening");
+
+    // ------------------------ 將座標平移至信箱30公分處座標 ------------------------
+    std::vector<double> mailbox_transform{0, 0.3, 0, 0, 0, 0, 1};
+    new_frame::fixedFrame_add(mailbox_transform, "mailbox_opening", "mailbox_opening_offset");
 
     if (find_mailbox)
     {
@@ -170,8 +172,8 @@ int main(int argc, char **argv)
     ROS_INFO("Move to initial position");
     std::cout << "------------------------------------------------------" << std::endl;
 
-    new_frame::waitforTransform("mailbox_opening_offset_2", targetTransform);
-    arm_move::setTargetPosition(nh, move_group, my_plan, targetTransform);
+    // new_frame::waitforTransform("mailbox_opening_offset_2", targetTransform);
+    // arm_move::setTargetPosition(nh, move_group, my_plan, targetTransform);
     // new_frame::waitforTransform("mailbox_opening_offset", targetTransform);
     // arm_move::setTargetPosition(nh, move_group, my_plan, targetTransform);
 
@@ -240,10 +242,7 @@ void cameraCallback(const std_msgs::String::ConstPtr &msg)
         mailbox_offset_transform[5] = q.z();
         mailbox_offset_transform[6] = q.w();
 
-        // ------------------------ 將座標平移至信箱30公分處座標 ------------------------
-        mailbox_offset_transform[2] -= 0.3;
-
         // ------------------------ 發布信箱座標 ------------------------
-        new_frame::fixedFrame_add(mailbox_offset_transform, "camera", "mailbox_opening_offset");
+        new_frame::fixedFrame_add(mailbox_offset_transform, "camera", "mailbox_opening");
     }
 }
