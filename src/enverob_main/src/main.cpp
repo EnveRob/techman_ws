@@ -206,12 +206,9 @@ void cameraCallback(const std_msgs::String::ConstPtr &msg)
                v[0], v[1], v[2],
                v[3], v[4], v[5]);
         std::vector<double> mailbox_offset_transform{v[0], v[1], v[2]};
-        // mailbox_offset_transform[0] -= GRIPPER_OFFSET_W;
-        // mailbox_offset_transform[1] += 0.02;
 
         tf::Quaternion q;
-        // q.setRPY(0, v[4], 0); // 以弧度為單位
-        q.setRPY(0, atan2(v[3], v[5]), 0); // 以弧度為單位
+        // q.setRPY(0, atan2(v[3], v[5]), 0); // 以弧度為單位
         mailbox_offset_transform.push_back(q.x());
         mailbox_offset_transform.push_back(q.y());
         mailbox_offset_transform.push_back(q.z());
