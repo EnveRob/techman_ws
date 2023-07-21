@@ -135,7 +135,7 @@ int main(int argc, char **argv)
     std::vector<double> movement = {0.0, r * cos(theta), -r * sin(theta), -theta}; // x, y, z, theta
     arm_move::setRelativePosition(nh, move_group, my_plan, "mailbox_opening", movement);
 
-    mailbox_transform = {0, -0.15, 0, 0, 0, 0, 1};
+    std::vector<double> mailbox_transform = {0, -0.15, 0, 0, 0, 0, 1};
     new_frame::fixedFrame_add(mailbox_transform, "gripper_link", "mailbox_opening_offset_2");
 
     // 輸入任意鍵以繼續
