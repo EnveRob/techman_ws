@@ -317,7 +317,7 @@ namespace arm_move
 
         // 檢查力量是否超過閾值
         printf("feedback_controller.getForceValue().x: %.2f\n", feedback_controller.getForceValue().x);
-        if (feedback_controller.getForceValue().x > FORCE_X_THRESHOLD)
+        if (feedback_controller.getForceValue().x > feedback_controller.forceXThreshold)
         {
           ROS_WARN("Force exceeds threshold, stopping execution");
           break;

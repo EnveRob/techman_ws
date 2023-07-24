@@ -56,6 +56,9 @@ int main(int argc, char **argv)
     gripper_msg.data = 1;
     pub.publish(gripper_msg);
 
+    forceSubsriber.forceXThreshold = forceSubsriber.getForceValue().x + 20;
+    std::cout << "forceSubsriber.forceXThreshold: " << forceSubsriber.forceXThreshold << std::endl;
+
     // 輸入任意鍵以繼續
     std::cout << "Press any key to continue..." << std::endl;
     std::cin.ignore();

@@ -1,7 +1,6 @@
 #ifndef ARM_MOVE_H
 #define ARM_MOVE_H
-// #define FORCE_X_THRESHOLD 400.0
-#define FORCE_X_THRESHOLD 360.0
+// #define FORCE_X_THRESHOLD 360.0
 
 #include <ros/ros.h>
 #include "force_feedback.h"

@@ -47,6 +47,7 @@ namespace force_feedback
         void shutCallback(const std_msgs::Bool::ConstPtr &msg);
         void forceCallback(const geometry_msgs::Vector3 &msg);
         geometry_msgs::Vector3 getForceValue() const;
+        double forceXThreshold;
     };
 }
 
