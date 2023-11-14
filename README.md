@@ -2,12 +2,12 @@
 ROS workspace for automated mail delivery robot, EnveRob, which is based on the TM-ROS driver by [Techman](https://github.com/TechmanRobotInc/tmr_ros1)
 
 ## Dependencies
-Industrial Robotic Arm: Techman tm5-900  
-ROS Noetic
-TM ROS1 Noetic Driver 
+Industrial Robotic Arm: Techman tm5-900   
+ROS Noetic  
+TM ROS1 Noetic Driver   
 
 ## Compile
-Main execution code at [src/enverob_main/src/main.cpp](https://github.com/EnveRob/techman_ws/blob/main/src/enverob_main/src/main.cpp)  
+Main execution code at [src/enverob_main/src/main.cpp](https://github.com/EnveRob/techman_ws/blob/main/src/enverob_main/src/main.cpp)   
 Compile this project using the standard ros routine
 
 
